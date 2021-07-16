@@ -273,6 +273,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14030ac1361478a864e928e5d77b4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   declaredInstallers:
   - {fileID: 2073360830}
 --- !u!4 &60492138
@@ -1272,6 +1281,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718dc4f63ac842f899986cfc614c8c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   declaredInstallers:
   - {fileID: 1983883981}
 --- !u!4 &1275192003
@@ -1374,11 +1392,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e475e327394abfa097fbadea121492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   declaredInstallers:
   - {fileID: 1072460448}
   scriptableObjects:
   - {fileID: 11400000, guid: 08379ccefc05200459f90a1c0711a340, type: 2}
+  - {fileID: 11400000, guid: f2d170116f3cd344f94500d89909a2ac, type: 2}
   - {fileID: 11400000, guid: 7416384af5acb35418247f76543f3274, type: 2}
+  - {fileID: 11400000, guid: 9f42f818bc3ede74f86e8fe11bae972f, type: 2}
   - {fileID: 11400000, guid: 7ee605bf134e44944b819d5fda25c774, type: 2}
   - {fileID: 11400000, guid: 98c8f7408db51e9459c2da82e1d90a81, type: 2}
   - {fileID: 11400000, guid: ae51cb49128e34c4080886ae8853f04b, type: 2}

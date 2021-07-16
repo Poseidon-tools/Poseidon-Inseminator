@@ -20,19 +20,25 @@
         {
             foreach (var scriptableObject in scriptableObjects)
             {
+                if (scriptableObject == null)
+                {
+                    // it could happen, because we have refs to ALL SO in project
+                    // there is a chance that few of them won't be loaded/cached due to Odin serialization
+                    continue;
+                }
                 var instance = (object)scriptableObject;
                 ResolveDependencies(ref instance);
             }
         }
         #endregion
         #region Editor
-#if UNITY_EDITOR
         [BoxGroup("ScriptableObjects"), Button(ButtonSizes.Large)]
         private void RefreshScriptableObjects()
         {
+        #if UNITY_EDITOR
             scriptableObjects = AssetsUtils.GetAllInstances<ScriptableObject>().ToList();
+            #endif
         }
-#endif
         #endregion
     }
 }

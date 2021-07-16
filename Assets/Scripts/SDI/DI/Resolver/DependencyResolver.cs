@@ -10,7 +10,7 @@
     using UnityEngine;
     using Utils;
 
-    public abstract class DependencyResolver : MonoBehaviour
+    public abstract class DependencyResolver : SerializedMonoBehaviour
     {
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
