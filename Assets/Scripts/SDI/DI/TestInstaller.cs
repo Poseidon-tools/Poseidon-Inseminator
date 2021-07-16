@@ -1,6 +1,9 @@
 ﻿namespace SDI.DI
 {
+    using System;
+    using System.Collections.Generic;
     using Core.ViewManager;
+    using Data;
     using UnityEngine;
 
     public class TestInstaller : Installer
@@ -9,36 +12,55 @@
         [SerializeField] private ViewManager sceneViewManager;
         [SerializeField] private MessageData sampleMessage;
         #endregion
+        
         #region Public Methods
-        public override void RegisterBindings(SceneContainer sceneContainer)
+        public override void CreateBindings()
         {
-            sceneContainer.RegisterDependency(typeof(ITextLogger), new InstallerEntity
+            InstallerBindings = new Dictionary<Type, List<InstallerEntity>>
             {
-                Id = "TestLogger",
-                ObjectInstance = new TestLogger()
-            });
-            sceneContainer.RegisterDependency(typeof(ITextLogger), new InstallerEntity
-            {
-                Id = "GreenTextLogger",
-                ObjectInstance = new GreenTextLogger()
-            });
-            
-            sceneContainer.RegisterDependency(typeof(ITextLogger), new InstallerEntity
-            {
-                Id = "CustomLoggerRed60",
-                ObjectInstance = new CustomLogger(Color.red, 60)
-            });
-            sceneContainer.RegisterDependency(typeof(ViewManager), new InstallerEntity
-            {
-                Id = "",
-                ObjectInstance = sceneViewManager
-            });
-            
-            sceneContainer.RegisterDependency(typeof(MessageData), new InstallerEntity
-            {
-                Id = "",
-                ObjectInstance = sampleMessage
-            });
+                {
+                    typeof(ITextLogger), new List<InstallerEntity>
+                    {
+                        new InstallerEntity
+                        {
+                            Id = "TestLogger",
+                            ObjectInstance = new TestLogger()
+                        },
+                        new InstallerEntity
+                        {
+                            Id = "GreenTextLogger",
+                            ObjectInstance = new GreenTextLogger()
+                        },
+                        new InstallerEntity
+                        {
+                            Id = "CustomLoggerRed60",
+                            ObjectInstance = new CustomLogger(Color.red, 60)
+                        }
+                    }
+                },
+                
+                {
+                    typeof(ViewManager), new List<InstallerEntity>
+                    {
+                        new InstallerEntity
+                        {
+                            Id = "",
+                            ObjectInstance = sceneViewManager
+                        }
+                    }
+                },
+                
+                {
+                    typeof(MessageData), new List<InstallerEntity>
+                    {
+                        new InstallerEntity
+                        {
+                            Id = "",
+                            ObjectInstance = sampleMessage
+                        }
+                    }
+                }
+            };
         }
         #endregion
     }

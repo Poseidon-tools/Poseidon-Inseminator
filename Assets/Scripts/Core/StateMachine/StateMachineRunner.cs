@@ -15,10 +15,6 @@
         #region Public Variables
         public T StateManager { get; private set; }
         #endregion
-        #region Inspector
-        [SerializeField, Attributes.InstallerContainer]
-        private List<Installer> dependencyInstaller = new List<Installer>();
-        #endregion
         #region Private Variables
         [ShowInInspector] private bool isInitialized;
         private IMessageDispatcher messageDispatcher;

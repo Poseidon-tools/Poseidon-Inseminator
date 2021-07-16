@@ -8,6 +8,7 @@
     using Core.MessageDispatcher.Interfaces;
     using Core.StateMachine;
     using Core.StateMachine.CustomMessages.Tools;
+    using Data;
     using Sirenix.OdinInspector;
     using Sirenix.Utilities;
     using UnityEngine;
@@ -16,12 +17,16 @@
     public class SceneContainer : SerializedMonoBehaviour, IMessageReceiver
     {
         #region Inspector
-        [SerializeField] private Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
-        private List<Type> listenedTypes;
+        [SerializeField, BoxGroup("Declared Installers"), InfoBox("Remember to drag your installer to this list!", InfoMessageType.Warning)]
+        [HideLabel]
+        private List<Installer> declaredInstallers = new List<Installer>();
+        #endregion
+        #region Private Variables
+        private Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
         #endregion
 
         #region Public API
-        public void RegisterDependency(Type targetType, InstallerEntity installerEntity)
+        public void InstallDependency(Type targetType, InstallerEntity installerEntity)
         {
             if (registeredDependencies.TryGetValue(targetType, out var entry))
             {
@@ -30,22 +35,17 @@
             }
             registeredDependencies.Add(targetType, new List<InstallerEntity> {installerEntity});
         }
-        
-        //todo: unregister?
 
-        public void ResolveStateMachineDependencies(object stateMachineRunnerInstance)
+        private void ResolveStateMachineDependencies(object stateMachineRunnerInstance)
         {
-            //Debug.Log($"Trying to resolve...");
             var fields = stateMachineRunnerInstance.GetType()
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             var genericArgs = stateMachineRunnerInstance.GetType().GetGenericArguments();
             foreach (var propertyInfo in fields)
             {
-                //Debug.Log($"{propertyInfo.GetNiceName()}:");
                 if (genericArgs.All(genType => genType != propertyInfo.PropertyType))
                 {
-                    //Debug.Log($"Not generic!");
                     continue;
                 }
                 //Debug.Log($"Found generic type: {propertyInfo.PropertyType.GetNiceName()}");
@@ -67,7 +67,6 @@
                 }
                 if (targetType.GetGenericTypeDefinition() != typeof(StateManager<>))
                 {
-                    //Debug.Log("still nothing");
                     continue;
                 }
                 // this is StateManager<>
@@ -119,15 +118,6 @@
                 {
                     continue;
                 }
-
-                /*
-                 * Rectangle rectangle = new Rectangle();
-                    PropertyInfo propertyInfo = typeof(Rectangle).GetProperty("Height");
-                    object boxed = rectangle;
-                    propertyInfo.SetValue(boxed, 5, null);
-                    rectangle = (Rectangle) boxed;
-                 */
-                    
                 
                 var nestedInstance = fieldInfo.GetValue(parentInstance);
                 if (nestedInjectAttribute.ForceInitialization)
@@ -141,9 +131,7 @@
                     fieldInfo.SetValue(parentInstance, nestedInstance);
                 }
                     
-
-                Debug.Log($"Resolving nested dependencies in {fieldInfo.FieldType.GetNiceName()}");
-                
+                //Debug.Log($"Resolving nested dependencies in {fieldInfo.FieldType.GetNiceName()}");
                 ResolveDependencies(ref nestedInstance);
                 if (fieldInfo.FieldType.IsValueType)
                 {
@@ -160,7 +148,7 @@
         protected void ResolveDependencies(ref object instanceObject)
         {
             var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            Debug.Log($"{instanceObject.GetType().GetNiceName()} fields count: {allInjectableFields.Length}");
+            //Debug.Log($"{instanceObject.GetType().GetNiceName()} fields count: {allInjectableFields.Length}");
             foreach (var fieldInfo in allInjectableFields)
             {
                 var injectAttribute = fieldInfo.GetCustomAttribute(typeof(Attributes.Injectable), true);
@@ -171,7 +159,7 @@
 
                 if (!(injectAttribute is Attributes.Injectable injectable)) continue;
                 var instance = Resolve(fieldInfo.FieldType, injectable.InstanceId);
-                Debug.Log($"Resolving {fieldInfo.GetNiceName()} in {instanceObject.GetType().GetNiceName()}");
+                //Debug.Log($"Resolving {fieldInfo.GetNiceName()} in {instanceObject.GetType().GetNiceName()}");
                 fieldInfo.SetValue(instanceObject, instance);
             }
             ResolveNested(ref instanceObject);
@@ -193,9 +181,7 @@
         private void Awake()
         {
             MessageDispatcher.Instance.RegisterReceiver(this);
-            //Install();
-            var runnerInstances = GetStateMachineRunners(GetAllComponents(GetSceneObjects()));
-            GetInstallersFromStateRunners(runnerInstances);
+            Install(declaredInstallers);
         }
         private void OnDisable()
         {
@@ -207,15 +193,18 @@
         {
             foreach (var installer in installers)
             {
-                installer.RegisterBindings(this);
+                installer.CreateBindings();
+                foreach (var installerBinding in installer.InstallerBindings)
+                {
+                    foreach (var installerEntity in installerBinding.Value)
+                    {
+                        InstallDependency(installerBinding.Key, installerEntity);
+                    }
+                }
             }
 
         }
-        //1. get scene objects (all)
-        //2. get components (all)
-        //3. get StateRunners from components (all)
-        //4. Iterate, get installers
-
+        #region Unused (to be removed)
         private List<GameObject> GetSceneObjects()
         {
             return FindObjectsOfType<GameObject>().ToList();
@@ -230,7 +219,7 @@
             return components;
         }
 
-        private List<object> GetStateMachineRunners(List<MonoBehaviour> sourceList)
+        private List<object> GetSceneStateMachineRunners(List<MonoBehaviour> sourceList)
         {
             List<object> result = new List<object>();
             foreach (var behaviour in sourceList)
@@ -249,27 +238,19 @@
 
             return result;
         }
+        #endregion
 
-        private void GetInstallersFromStateRunners(List<object> stateRunnerInstances)
+        #endregion
+
+        #region Editor
+        [BoxGroup("Declared Installers"), Button(ButtonSizes.Large)]
+        private void Refresh()
         {
-            foreach (var runnerInstance in stateRunnerInstances)
-            {
-                var fields = runnerInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-                foreach (var fieldInfo in fields)
-                {
-                    var attribute = fieldInfo.GetCustomAttribute<Attributes.InstallerContainer>();
-                    if (attribute == null)
-                    {
-                        continue;
-                    }
-
-                    var installers = fieldInfo.GetValue(runnerInstance) as List<Installer>;
-                    Install(installers);
-                }
-            }
+            declaredInstallers = FindObjectsOfType<Installer>().ToList();
         }
         #endregion
 
+        #region Messages
         List<Type> IMessageReceiver.ListenedTypes => new List<Type>(){typeof(StateMachineToolMessages.OnStateRunnerStatusChanged)};
 
         void IMessageReceiver.OnMessageReceived(object message)
@@ -282,13 +263,7 @@
                 }
             }
         }
+        #endregion
     }
     
-    //todo: extract
-    [Serializable]
-    public class InstallerEntity
-    {
-        public string Id;
-        public object ObjectInstance;
-    }
 }

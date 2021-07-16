@@ -613,8 +613,7 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 1983883981}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -624,30 +623,11 @@ MonoBehaviour:
       Entry: 7
       Data: 0|Core.StateMachine.StateMachineRunner`2[[SDI.AppState.AppStateManager,
         Assembly-CSharp],[SDI.AppState.ApplicationState, Assembly-CSharp]], Assembly-CSharp
-    - Name: dependencyInstaller
-      Entry: 7
-      Data: 1|System.Collections.Generic.List`1[[SDI.DI.Installer, Assembly-CSharp]],
-        mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 10
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
     - Name: 
       Entry: 8
       Data: 
   appViewManager: {fileID: 1239911568}
   messageDispatcher: {fileID: 11400000, guid: 381904c7f1b3e8247b13b1bde064b120, type: 2}
-  stateMachineRunner:
-    dependencyInstaller:
-    - {fileID: 1983883981}
 --- !u!4 &1095376335
 Transform:
   m_ObjectHideFlags: 0
@@ -1073,27 +1053,9 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: registeredDependencies
-      Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[System.Type, mscorlib],[System.Collections.Generic.List`1[[SDI.DI.InstallerEntity,
-        Assembly-CSharp]], mscorlib]], mscorlib
-    - Name: comparer
-      Entry: 7
-      Data: 1|System.Collections.Generic.ObjectEqualityComparer`1[[System.Type, mscorlib]],
-        mscorlib
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 12
-      Data: 0
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
+  declaredInstallers:
+  - {fileID: 1983883981}
 --- !u!4 &1275192003
 Transform:
   m_ObjectHideFlags: 0

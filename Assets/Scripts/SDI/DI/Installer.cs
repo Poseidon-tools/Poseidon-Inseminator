@@ -1,16 +1,20 @@
 ﻿namespace SDI.DI
 {
+    using System;
+    using System.Collections.Generic;
+    using Data;
     using JetBrains.Annotations;
     using UnityEngine;
 
-    public abstract class Installer : MonoBehaviour
+    public abstract class Installer : MonoBehaviour, IInstaller
     {
-        #region Public API
+        #region Installer API
+        public Dictionary<Type, List<InstallerEntity>> InstallerBindings { get; set; }
+
         [UsedImplicitly]
-        public virtual void RegisterBindings(SceneContainer sceneContainer)
+        public virtual void CreateBindings()
         {
-            //todo: install your dependencies
-            // and don't worry about sceneContainer parameter, it will be self-injected
+            InstallerBindings = new Dictionary<Type, List<InstallerEntity>>();
         }
         #endregion
     }
