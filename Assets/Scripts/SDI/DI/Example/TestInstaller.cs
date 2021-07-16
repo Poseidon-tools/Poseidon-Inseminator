@@ -1,9 +1,10 @@
-﻿namespace SDI.DI
+﻿namespace SDI.DI.Example
 {
     using System;
     using System.Collections.Generic;
     using Core.ViewManager;
     using Data;
+    using Installers;
     using UnityEngine;
 
     public class TestInstaller : Installer

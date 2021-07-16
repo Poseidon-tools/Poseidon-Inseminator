@@ -3,6 +3,7 @@
     using Core.StateMachine;
     using Core.ViewManager;
     using DI;
+    using DI.Example;
     using Views;
 
     public class ApplicationExampleState : State<ApplicationState>

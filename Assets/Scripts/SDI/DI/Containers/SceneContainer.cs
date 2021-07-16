@@ -1,4 +1,4 @@
-﻿namespace SDI.DI
+﻿namespace SDI.DI.Containers
 {
     using System;
     using System.Collections.Generic;
@@ -9,8 +9,8 @@
     using Core.StateMachine;
     using Core.StateMachine.CustomMessages.Tools;
     using Data;
+    using Installers;
     using Sirenix.OdinInspector;
-    using Sirenix.Utilities;
     using UnityEngine;
     using Utils;
 

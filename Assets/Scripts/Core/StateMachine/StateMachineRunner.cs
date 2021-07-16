@@ -1,11 +1,9 @@
 ﻿namespace Core.StateMachine
 {
     using System;
-    using System.Collections.Generic;
     using CustomMessages.Tools;
     using MessageDispatcher;
     using MessageDispatcher.Interfaces;
-    using SDI.DI;
     using Sirenix.OdinInspector;
     using UnityEngine;
 

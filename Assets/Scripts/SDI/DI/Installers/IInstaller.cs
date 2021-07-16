@@ -1,4 +1,4 @@
-﻿namespace SDI.DI
+﻿namespace SDI.DI.Installers
 {
     using System;
     using System.Collections.Generic;

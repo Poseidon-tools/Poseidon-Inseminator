@@ -1,4 +1,4 @@
-﻿namespace SDI.DI
+﻿namespace SDI.DI.Example
 {
     using Core.ViewManager;
     using UnityEngine;
