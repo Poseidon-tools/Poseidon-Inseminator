@@ -19,7 +19,7 @@
             {
                 typeof(DependencyResolver), 
                 typeof(Installer)
-            });
+            }, gameObject.scene);
             var sceneComponents = DIHelpers.GetAllComponents(sceneObjects);
 
             foreach (var sceneComponent in sceneComponents)

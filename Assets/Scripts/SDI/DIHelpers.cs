@@ -16,10 +16,10 @@
         {
             return Object.FindObjectsOfType<GameObject>().ToList();
         }
-        public static List<GameObject> GetSceneObjectsExceptTypes(List<Type> excludedTypes)
+        public static List<GameObject> GetSceneObjectsExceptTypes(List<Type> excludedTypes, Scene scene)
         {
             List<GameObject> rootObjects = new List<GameObject>();
-            Scene scene = SceneManager.GetActiveScene();
+            
             scene.GetRootGameObjects(rootObjects);
             List<GameObject> sceneObjectsFiltered = new List<GameObject>();
             foreach (var rootObject in rootObjects)

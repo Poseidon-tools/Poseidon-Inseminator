@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44c221e3c34546ac87fabb3ecbc09dc6, type: 3}
   m_Name: ExampleSOInjection
   m_EditorClassIdentifier: 
-  messageData: {fileID: 0}
+  messageData: {fileID: 11400000, guid: ae51cb49128e34c4080886ae8853f04b, type: 2}

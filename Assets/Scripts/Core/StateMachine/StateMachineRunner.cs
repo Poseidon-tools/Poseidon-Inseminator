@@ -35,7 +35,7 @@
             // stinky: the last place where better idea is missing
             // but: it's solving problem with nested state runners in normal/nested states
             // because we don't have to fetch anything via reflection from deep levels
-            //SceneContainer.Instance.ResolveStateMachineDependencies(this);
+            // SceneContainer.Instance.ResolveStateMachineDependencies(this);
             messageDispatcher.Send(new StateMachineToolMessages.OnStateRunnerStatusChanged(this, typeof(U), typeof(T), isInitialized));
         }
 
