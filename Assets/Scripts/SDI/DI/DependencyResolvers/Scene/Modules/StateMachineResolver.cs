@@ -1,4 +1,4 @@
-﻿namespace SDI.DI.Containers.SceneContainer.Modules
+﻿namespace SDI.DI.DependencyResolvers.Scene.Modules
 {
     using System;
     using System.Linq;

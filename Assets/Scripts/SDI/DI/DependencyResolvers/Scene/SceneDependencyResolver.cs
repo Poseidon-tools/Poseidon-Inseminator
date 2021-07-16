@@ -1,4 +1,4 @@
-﻿namespace SDI.DI.Containers.SceneContainer
+﻿namespace SDI.DI.DependencyResolvers.Scene
 {
     using System;
     using System.Collections.Generic;
