@@ -1,4 +1,4 @@
-﻿namespace SDI.DI.Example
+﻿namespace SDI.DI.Example.ExampleInstallers
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     using Installers;
     using UnityEngine;
 
-    public class TestInstaller : Installer
+    public class ExampleSceneInstaller : Installer
     {
         #region Inspector
         [SerializeField] private ViewManager sceneViewManager;

@@ -2,28 +2,24 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Core.MessageDispatcher;
     using Core.MessageDispatcher.Interfaces;
     using Core.StateMachine.CustomMessages.Tools;
     using Installers;
     using Modules;
     using Resolver;
-    using Sirenix.OdinInspector;
     using UnityEngine;
 
     public class SceneDependencyResolver : DependencyResolver, IMessageReceiver
     {
-        #region Inspector
-        [SerializeField, BoxGroup("Declared Installers"), InfoBox("Remember to drag your installer to this list!", InfoMessageType.Warning)]
-        [HideLabel]
-        private List<Installer> declaredInstallers = new List<Installer>();
-        #endregion
-
         #region Resolving
-        private void ResolveSceneObjects()
+        protected override void GetTargetObjects()
         {
-            var sceneObjects = DIHelpers.GetSceneObjects();
+            var sceneObjects = DIHelpers.GetSceneObjectsExceptTypes(new List<Type>()
+            {
+                typeof(DependencyResolver), 
+                typeof(Installer)
+            });
             var sceneComponents = DIHelpers.GetAllComponents(sceneObjects);
 
             foreach (var sceneComponent in sceneComponents)
@@ -44,9 +40,6 @@
         private void Awake()
         {
             MessageDispatcher.Instance.RegisterReceiver(this);
-            Install(declaredInstallers);
-
-            ResolveSceneObjects();
         }
         private void OnDisable()
         {
@@ -55,14 +48,6 @@
         #endregion
         #region Private Variables
         private StateMachineResolver stateMachineResolver = new StateMachineResolver();
-        #endregion
-
-        #region Editor
-        [BoxGroup("Declared Installers"), Button(ButtonSizes.Large)]
-        private void Refresh()
-        {
-            declaredInstallers = FindObjectsOfType<Installer>().ToList();
-        }
         #endregion
 
         #region Runtime Messages

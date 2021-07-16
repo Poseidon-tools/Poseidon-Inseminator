@@ -6,6 +6,7 @@
     using System.Reflection;
     using Data;
     using Installers;
+    using Sirenix.OdinInspector;
     using UnityEngine;
     using Utils;
 
@@ -14,7 +15,22 @@
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
         #endregion
+        #region Inspector
+        [SerializeField, BoxGroup("Declared Installers"), InfoBox("Remember to drag your installer to this list!", InfoMessageType.Warning)]
+        [HideLabel]
+        protected List<Installer> declaredInstallers = new List<Installer>();
+        #endregion
+
+        #region Public API
+        public virtual void InitializeResolver()
+        {
+            Install(declaredInstallers);
+            GetTargetObjects();
+        }
+        #endregion
+        
         #region Resolving Core
+        protected abstract void GetTargetObjects();
         protected virtual void ResolveNested(ref object parentInstance)
         {
             var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
