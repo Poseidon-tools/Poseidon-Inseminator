@@ -12,7 +12,7 @@
     using Sirenix.OdinInspector;
     using UnityEngine;
 
-    public class SceneContainer : DependencyResolver, IMessageReceiver
+    public class SceneDependencyResolver : DependencyResolver, IMessageReceiver
     {
         #region Inspector
         [SerializeField, BoxGroup("Declared Installers"), InfoBox("Remember to drag your installer to this list!", InfoMessageType.Warning)]
