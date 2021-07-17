@@ -3,7 +3,8 @@
     using Core.StateMachine;
     using Core.ViewManager;
     using CubbyDI;
-    using CubbyDI.Factory;
+    using CubbyDI.Scripts;
+    using CubbyDI.Scripts.Factory;
     using Views;
 
     public class ApplicationOutroState : State<ApplicationState>

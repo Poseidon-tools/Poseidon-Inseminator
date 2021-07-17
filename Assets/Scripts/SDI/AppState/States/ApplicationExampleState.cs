@@ -3,7 +3,8 @@
     using Core.StateMachine;
     using Core.ViewManager;
     using CubbyDI;
-    using CubbyDI.Example;
+    using CubbyDI.Scripts;
+    using CubbyDI.Scripts.Example;
     using Views;
 
     public class ApplicationExampleState : State<ApplicationState>

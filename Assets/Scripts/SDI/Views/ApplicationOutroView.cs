@@ -1,7 +1,7 @@
 ﻿namespace SDI.Views
 {
     using Core.ViewManager;
-    using CubbyDI.Example;
+    using CubbyDI.Scripts.Example;
     using UnityEngine;
     using UnityEngine.UI;
 
