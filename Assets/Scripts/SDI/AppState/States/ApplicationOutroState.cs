@@ -2,16 +2,15 @@
 {
     using Core.StateMachine;
     using Core.ViewManager;
-    using DI;
-    using DI.Example;
-    using DI.Factory;
+    using CubbyDI;
+    using CubbyDI.Factory;
     using Views;
 
     public class ApplicationOutroState : State<ApplicationState>
     {
         #region Private Variables
-        [Attributes.Injectable] private ViewManager viewManager;
-        [Attributes.Injectable] private DIFactory factory;
+        [CubbyAttributes.Injectable] private ViewManager viewManager;
+        [CubbyAttributes.Injectable] private CubbyFactory factory;
         private ApplicationOutroView outroView;
 
         private int maxItems = 4;
