@@ -24,7 +24,7 @@
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods
-        public ApplicationExampleState(IStateManager<ApplicationState> stateManager, ApplicationState stateType, ViewManager viewManager) 
+        public ApplicationExampleState(IStateManager<ApplicationState> stateManager, ApplicationState stateType) 
             : base(stateManager, stateType)
         {
         }

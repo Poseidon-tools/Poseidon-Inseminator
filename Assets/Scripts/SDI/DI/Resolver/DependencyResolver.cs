@@ -64,7 +64,6 @@
         protected virtual void ResolveDependencies(ref object instanceObject)
         {
             var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-
             foreach (var fieldInfo in allInjectableFields)
             {
                 var injectAttribute = fieldInfo.GetCustomAttribute(typeof(Attributes.Injectable), true);
@@ -72,7 +71,7 @@
                 {
                     continue;
                 }
-
+                
                 if (!(injectAttribute is Attributes.Injectable injectable)) continue;
                 var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);

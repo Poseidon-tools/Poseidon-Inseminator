@@ -5,6 +5,7 @@
     using Core.MessageDispatcher;
     using Core.MessageDispatcher.Interfaces;
     using Core.StateMachine.CustomMessages.Tools;
+    using Data;
     using Installers;
     using Modules;
     using Resolver;
@@ -12,6 +13,17 @@
 
     public class SceneDependencyResolver : DependencyResolver, IMessageReceiver
     {
+        #region Public API
+        public void ResolveExternalGameObject(ref GameObject externalInstance)
+        {
+            var components = DIHelpers.GetAllComponents(new List<GameObject>() {externalInstance});
+            foreach (var externalComponent in components)
+            {
+                var instance = (object)externalComponent;
+                ResolveDependencies(ref instance);
+            }
+        }
+        #endregion
         #region Resolving
         protected override void GetTargetObjects()
         {
@@ -39,6 +51,15 @@
         #region Unity Methods
         private void Awake()
         {
+            //add self to dependencies
+            registeredDependencies.Add(GetType(), new List<InstallerEntity>
+            {
+                new InstallerEntity
+                {
+                    Id = "",
+                    ObjectInstance = this
+                }
+            });
             MessageDispatcher.Instance.RegisterReceiver(this);
         }
         private void OnDisable()

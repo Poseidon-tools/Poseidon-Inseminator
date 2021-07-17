@@ -26,8 +26,8 @@
             stateMachineRunner.Initialize(new State<ApplicationState>[]
             {
                 new AppIntroState(stateMachineRunner.StateManager, ApplicationState.Intro, appViewManager),
-                new ApplicationExampleState(stateMachineRunner.StateManager, ApplicationState.ExampleState, appViewManager),
-                new ApplicationOutroState(stateMachineRunner.StateManager, ApplicationState.Outro, appViewManager), 
+                new ApplicationExampleState(stateMachineRunner.StateManager, ApplicationState.ExampleState),
+                new ApplicationOutroState(stateMachineRunner.StateManager, ApplicationState.Outro), 
             }, ApplicationState.Intro);
         }
         #endregion
