@@ -7,7 +7,9 @@
     using Core.StateMachine.CustomMessages.Tools;
     using CubbyDI.Scripts.DependencyResolvers.Scene;
     using Modules;
+    using UnityEngine;
 
+    [DefaultExecutionOrder(-50)]
     public class CustomSceneDependencyResolver : SceneDependencyResolver, IMessageReceiver
     {
         #region Private Variables

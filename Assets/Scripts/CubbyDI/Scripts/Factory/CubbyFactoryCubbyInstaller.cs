@@ -1,9 +1,7 @@
 ﻿namespace CubbyDI.Scripts.Factory
 {
-    using System;
-    using System.Collections.Generic;
-    using Data;
     using Installers;
+    using Resolver;
     using UnityEngine;
 
     public class CubbyFactoryCubbyInstaller : CubbyInstaller
@@ -13,21 +11,9 @@
         #endregion
         
         #region Public Methods
-        public override void CreateBindings()
+        public override void InstallBindings(DependencyResolver dependencyResolver)
         {
-            InstallerBindings = new Dictionary<Type, List<InstallerEntity>>
-            {
-                {
-                    typeof(CubbyFactory), new List<InstallerEntity>
-                    {
-                        new InstallerEntity
-                        {
-                            Id = "",
-                            ObjectInstance = factory
-                        }
-                    }
-                }
-            };
+            dependencyResolver.Bind<CubbyFactory>(factory);
         }
         #endregion
     }

@@ -29,6 +29,15 @@
             Install(declaredInstallers);
             GetTargetObjects();
         }
+
+        public void Bind<T>(T objectInstance, string instanceId = "")
+        {
+            InstallDependency(typeof(T), new InstallerEntity()
+            {
+                Id = instanceId,
+                ObjectInstance = objectInstance
+            });
+        }
         #endregion
         
         #region Resolving Core
@@ -75,10 +84,8 @@
                 }
                 
                 if (!(injectAttribute is CubbyAttributes.Injectable injectable)) continue;
-                Debug.Log($"{fieldInfo.FieldType.GetNiceName()} injectable!");
                 var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);
-                Debug.Log($"{fieldInfo.FieldType.GetNiceName()} value set to: {instance.GetType().GetNiceName()}");
             }
             ResolveNested(ref instanceObject);
         }
@@ -122,14 +129,16 @@
         {
             foreach (var installer in installers)
             {
-                installer.CreateBindings();
+                installer.InstallBindings(this);
+
+                /*installer.CreateBindings();
                 foreach (var installerBinding in installer.InstallerBindings)
                 {
                     foreach (var installerEntity in installerBinding.Value)
                     {
                         InstallDependency(installerBinding.Key, installerEntity);
                     }
-                }
+                }*/
             }
         }
         #endregion
