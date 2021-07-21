@@ -2,26 +2,25 @@
 {
     using Core.StateMachine;
     using Core.ViewManager;
-    using CubbyDI;
-    using CubbyDI.Scripts;
-    using CubbyDI.Scripts.Example;
+    using trunkDI.Scripts;
+    using trunkDI.Scripts.Example;
     using Views;
 
     public class ApplicationExampleState : State<ApplicationState>
     {
         #region Private Variables
-        [CubbyAttributes.Injectable]
+        [TrunkAttributes.Injectable]
         private ViewManager viewManager;
 
-        [CubbyAttributes.Injectable]
+        [TrunkAttributes.Injectable]
         private MessageData messageData;
 
-        [CubbyAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
+        [TrunkAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
         private ITextLogger testLogger;
 
         private ApplicationExampleView exampleView;
 
-        [CubbyAttributes.NestedInjectable]
+        [TrunkAttributes.NestedInjectable]
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods
