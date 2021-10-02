@@ -7,7 +7,6 @@
     using Resolver;
     using UnityEngine;
 
-    //todo: extract custom StateManager resolving logic, make derived class
     public class ScenePoseidonDependencyResolver : PoseidonDependencyResolver
     {
         #region Public API

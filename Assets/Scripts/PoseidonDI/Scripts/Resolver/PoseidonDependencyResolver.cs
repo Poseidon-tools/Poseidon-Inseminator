@@ -32,7 +32,7 @@
 
         public void Bind<T>(T objectInstance, string instanceId = "")
         {
-            InstallDependency(typeof(T), new InstallerEntity()
+            InstallDependency(typeof(T), new InstallerEntity
             {
                 Id = instanceId,
                 ObjectInstance = objectInstance
@@ -130,15 +130,6 @@
             foreach (var installer in installers)
             {
                 installer.InstallBindings(this);
-
-                /*installer.CreateBindings();
-                foreach (var installerBinding in installer.InstallerBindings)
-                {
-                    foreach (var installerEntity in installerBinding.Value)
-                    {
-                        InstallDependency(installerBinding.Key, installerEntity);
-                    }
-                }*/
             }
         }
         #endregion
