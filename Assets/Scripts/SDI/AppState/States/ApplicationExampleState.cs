@@ -2,25 +2,25 @@
 {
     using Core.StateMachine;
     using Core.ViewManager;
-    using trunkDI.Scripts;
-    using trunkDI.Scripts.Example;
+    using PoseidonDI.Scripts;
+    using PoseidonDI.Scripts.Example;
     using Views;
 
     public class ApplicationExampleState : State<ApplicationState>
     {
         #region Private Variables
-        [TrunkAttributes.Injectable]
+        [PoseidonAttributes.Injectable]
         private ViewManager viewManager;
 
-        [TrunkAttributes.Injectable]
+        [PoseidonAttributes.Injectable]
         private MessageData messageData;
 
-        [TrunkAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
+        [PoseidonAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
         private ITextLogger testLogger;
 
         private ApplicationExampleView exampleView;
 
-        [TrunkAttributes.NestedInjectable]
+        [PoseidonAttributes.NestedInjectable]
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods

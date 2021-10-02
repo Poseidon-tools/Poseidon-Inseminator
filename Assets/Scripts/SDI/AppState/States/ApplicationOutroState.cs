@@ -2,15 +2,15 @@
 {
     using Core.StateMachine;
     using Core.ViewManager;
-    using trunkDI.Scripts;
-    using trunkDI.Scripts.Factory;
+    using PoseidonDI.Scripts;
+    using PoseidonDI.Scripts.Factory;
     using Views;
 
     public class ApplicationOutroState : State<ApplicationState>
     {
         #region Private Variables
-        [TrunkAttributes.Injectable] private ViewManager viewManager;
-        [TrunkAttributes.Injectable] private TrunkFactory factory;
+        [PoseidonAttributes.Injectable] private ViewManager viewManager;
+        [PoseidonAttributes.Injectable] private PoseidonFactory factory;
         private ApplicationOutroView outroView;
 
         private int maxItems = 4;

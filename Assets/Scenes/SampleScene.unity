@@ -400,7 +400,7 @@ PrefabInstance:
       objectReference: {fileID: 1315649255}
     - target: {fileID: 3873321592931710374, guid: e3cf66adf0863ba4e87bc2590ec94862, type: 3}
       propertyPath: m_Name
-      value: TrunkDIManager
+      value: PoseidonDIManager
       objectReference: {fileID: 0}
     - target: {fileID: 4839971673776981057, guid: e3cf66adf0863ba4e87bc2590ec94862, type: 3}
       propertyPath: m_RootOrder
@@ -2539,7 +2539,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2217501458116175226, guid: 8b21f8b9521d4614384e2625173063be, type: 3}
       propertyPath: m_Name
-      value: TrunkFactory
+      value: PoseidonFactory
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b21f8b9521d4614384e2625173063be, type: 3}
