@@ -3,15 +3,13 @@
     using System.Collections.Generic;
     using System.Linq;
     using Resolver;
-    using Sirenix.OdinInspector;
     using UnityEngine;
     using Utils;
 
     public class ScriptableObjectPoseidonDependencyResolver : PoseidonDependencyResolver
     {
         #region Inspector
-        [SerializeField, BoxGroup("ScriptableObjects"), InfoBox("Hit refresh button to refresh values.", InfoMessageType.Info)]
-        [HideLabel]
+        [SerializeField, Header("ScriptableObjects")]
         private List<ScriptableObject> scriptableObjects = new List<ScriptableObject>();
         #endregion
 
@@ -32,7 +30,7 @@
         }
         #endregion
         #region Editor
-        [BoxGroup("ScriptableObjects"), Button(ButtonSizes.Large)]
+        //[BoxGroup("ScriptableObjects"), Button(ButtonSizes.Large)]
         private void RefreshScriptableObjects()
         {
         #if UNITY_EDITOR

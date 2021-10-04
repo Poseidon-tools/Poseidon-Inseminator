@@ -6,20 +6,16 @@
     using System.Reflection;
     using Data;
     using Installers;
-    using Sirenix.OdinInspector;
-    using Sirenix.Utilities;
     using UnityEngine;
     using Utils;
 
-    public abstract class PoseidonDependencyResolver : SerializedMonoBehaviour
+    public abstract class PoseidonDependencyResolver : MonoBehaviour
     {
         #region Private Variables
-        [ShowInInspector]
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
         #endregion
         #region Inspector
-        [SerializeField, BoxGroup("Declared Installers"), InfoBox("Remember to drag your installer to this list!", InfoMessageType.Warning)]
-        [HideLabel]
+        [SerializeField, Header("Declared Installers")]
         protected List<PoseidonInstaller> declaredInstallers = new List<PoseidonInstaller>();
         #endregion
 
@@ -94,7 +90,7 @@
         {
             if (!registeredDependencies.TryGetValue(targetType, out var dependency))
             {
-                Debug.LogError($"Cannot get dependency instance for {targetType.GetNiceName()} | {targetType}");
+                Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}");
                 return default;
             }
             if (instanceId.IsNullOrEmpty())

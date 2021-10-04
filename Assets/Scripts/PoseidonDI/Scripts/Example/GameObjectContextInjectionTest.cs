@@ -1,6 +1,5 @@
 ﻿namespace PoseidonDI.Scripts.Example
 {
-    using Sirenix.OdinInspector;
     using UnityEngine;
     using Utils.ScenesHelper;
 
@@ -16,7 +15,7 @@
         }
         #endregion
         #region Scene Test
-        [Button]
+        //[Button]
         private async void LoadAdditionalScene()
         {
             SceneMaintainer sceneMaintainer = new SceneMaintainer();
