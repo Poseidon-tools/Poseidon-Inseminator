@@ -1,11 +1,11 @@
-﻿namespace SDI.CubbyCustomResolvers
+﻿namespace SDI.CustomResolvers
 {
     using System;
     using System.Collections.Generic;
     using Core.MessageDispatcher;
     using Core.MessageDispatcher.Interfaces;
     using Core.StateMachine.CustomMessages.Tools;
-    using Modules;
+    using CubbyCustomResolvers.Modules;
     using PoseidonDI.Scripts.DependencyResolvers.Scene;
     using UnityEngine;
 
