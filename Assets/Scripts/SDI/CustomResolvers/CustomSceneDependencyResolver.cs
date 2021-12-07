@@ -13,10 +13,10 @@
         #region Overrides
         public override void OnAfterGetObjects()
         {
-            foreach (var sceneComponent in sceneComponents)
+           /* foreach (var sceneComponent in sceneComponents)
             {
                 stateMachineResolver.ResolveStateMachines(sceneComponent, ResolveWithRefWrapper);
-            }
+            }*/
         }
         #endregion
         

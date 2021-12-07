@@ -2,21 +2,26 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using Data;
     using Installers;
+    using ResolvingModules;
+    using Sirenix.OdinInspector;
     using UnityEngine;
-    using Utils;
 
-    public abstract class InseminatorDependencyResolver : MonoBehaviour
+    public abstract class InseminatorDependencyResolver : SerializedMonoBehaviour
     {
+        #region Public Variables
+        public Dictionary<Type, List<InstallerEntity>> RegisteredDependencies => registeredDependencies;
+        #endregion
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
         #endregion
         #region Inspector
         [SerializeField, Header("Declared Installers")]
         protected List<InseminatorInstaller> declaredInstallers = new List<InseminatorInstaller>();
+
+        [SerializeField, Header("Modules")]
+        protected List<ResolvingModule> resolvingModules = new List<ResolvingModule>();
         #endregion
 
         #region Public API
@@ -61,71 +66,12 @@
         
         #region Resolving Core
         protected abstract void GetTargetObjects();
-        protected virtual void ResolveNested(ref object parentInstance)
+        public virtual void ResolveDependencies(ref object instanceObject)
         {
-            var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in fields)
+            foreach (var resolvingModule in resolvingModules)
             {
-                var nestedInjectAttribute = fieldInfo.GetCustomAttribute<InseminatorAttributes.NestedInjectable>();
-                if (nestedInjectAttribute == null)
-                {
-                    continue;
-                }
-                
-                var nestedInstance = fieldInfo.GetValue(parentInstance);
-                if (nestedInjectAttribute.ForceInitialization)
-                {
-                    nestedInstance = TryForceInitializeInstance(fieldInfo.FieldType);
-                    if(nestedInstance == null)
-                    {
-                        Debug.LogError("Cannot create DI instance of object.");
-                        continue;
-                    }
-                    fieldInfo.SetValue(parentInstance, nestedInstance);
-                }
-                    
-                ResolveDependencies(ref nestedInstance);
-                if (fieldInfo.FieldType.IsValueType)
-                {
-                    fieldInfo.SetValue(parentInstance, nestedInstance);
-                }
+                resolvingModule.Run(this, instanceObject);
             }
-        }
-        protected virtual void ResolveDependencies(ref object instanceObject)
-        {
-            var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in allInjectableFields)
-            {
-                var injectAttribute = fieldInfo.GetCustomAttribute(typeof(InseminatorAttributes.Injectable), true);
-
-                if (!(injectAttribute is InseminatorAttributes.Injectable injectable)) continue;
-                var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
-                fieldInfo.SetValue(instanceObject, instance);
-            }
-            ResolveNested(ref instanceObject);
-        }
-
-        protected virtual object ResolveSingleDependency(Type targetType, string instanceId = "")
-        {
-            if (!registeredDependencies.TryGetValue(targetType, out var dependency))
-            {
-                Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}");
-                return default;
-            }
-            if (instanceId.IsNullOrEmpty())
-            {
-                return dependency[0].ObjectInstance;
-            }
-
-            var matchingInstance = dependency.FirstOrDefault(instance => instance.Id.Equals(instanceId));
-            return matchingInstance?.ObjectInstance;
-        }
-        #endregion
-        
-        #region Helpers
-        protected virtual object TryForceInitializeInstance(Type type)
-        {
-            return Activator.CreateInstance(type);
         }
         #endregion
         

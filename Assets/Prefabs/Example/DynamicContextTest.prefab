@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4692235844590308079}
   - component: {fileID: 2451776815929776317}
   - component: {fileID: 1655966680130663086}
+  - component: {fileID: 2364911019826595543}
   m_Layer: 5
   m_Name: StatusRenderer
   m_TagString: Untagged
@@ -134,6 +135,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2364911019826595543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450216722957138139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b29fb7742bc7478b89bc62580573a834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPopup: 0
+  displayAnimationSequence: {fileID: 0}
+  hideAnimationSequence: {fileID: 0}
+  <StatusRenderer>k__BackingField: {fileID: 1655966680130663086}
 --- !u!1 &1046683375722916907
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,6 +163,7 @@ GameObject:
   - component: {fileID: 2999161646447996044}
   - component: {fileID: 706166141366281142}
   - component: {fileID: 7496627709824399599}
+  - component: {fileID: 5448467041565838204}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -233,7 +251,21 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
+--- !u!114 &5448467041565838204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046683375722916907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77e75073fcd6194790b2fbebc9113f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewsReferences:
+  - {fileID: 2364911019826595543}
 --- !u!1 &2404041820277091145
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1445444757290708557
 Transform:
   m_ObjectHideFlags: 0
@@ -324,6 +356,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14030ac1361478a864e928e5d77b4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: resolvingModules
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Inseminator.Scripts.Resolver.ResolvingModules.ResolvingModule,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|Inseminator.Scripts.Resolver.ResolvingModules.StandardInjectingModule,
+        Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|SDI.CustomResolvers.Modules.StateMachineResolvingModule, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   declaredInstallers:
   - {fileID: 1206946261316521207}
 --- !u!1 &9160459819636824037
@@ -369,3 +436,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1262321689344bda63fd1c55e96c5f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewManager: {fileID: 5448467041565838204}

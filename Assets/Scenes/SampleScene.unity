@@ -273,6 +273,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14030ac1361478a864e928e5d77b4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: resolvingModules
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Inseminator.Scripts.Resolver.ResolvingModules.ResolvingModule,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Inseminator.Scripts.Resolver.ResolvingModules.StandardInjectingModule,
+        Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   declaredInstallers:
   - {fileID: 2073360830}
 --- !u!4 &60492138
@@ -1373,6 +1402,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb40610d694489aad1e4e5330300ae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: resolvingModules
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Inseminator.Scripts.Resolver.ResolvingModules.ResolvingModule,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 1|Inseminator.Scripts.Resolver.ResolvingModules.StandardInjectingModule,
+        Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|SDI.CustomResolvers.Modules.StateMachineResolvingModule, Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   declaredInstallers:
   - {fileID: 1983883981}
   - {fileID: 1415313601}
@@ -1476,6 +1540,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e475e327394abfa097fbadea121492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: resolvingModules
+      Entry: 7
+      Data: 0|System.Collections.Generic.List`1[[Inseminator.Scripts.Resolver.ResolvingModules.ResolvingModule,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Inseminator.Scripts.Resolver.ResolvingModules.StandardInjectingModule,
+        Assembly-CSharp
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   declaredInstallers:
   - {fileID: 1072460448}
   scriptableObjects:
