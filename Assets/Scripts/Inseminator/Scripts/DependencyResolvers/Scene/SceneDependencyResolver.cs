@@ -20,10 +20,13 @@
         {
             var sceneObjects = InseminatorHelpers.GetSceneObjectsExceptTypes(new List<Type>()
             {
+                
+            }, gameObject.scene);
+            sceneComponents = InseminatorHelpers.GetComponentsExceptTypes(sceneObjects, new List<Type>()
+            {
                 typeof(InseminatorDependencyResolver), 
                 typeof(InseminatorInstaller)
-            }, gameObject.scene);
-            sceneComponents = InseminatorHelpers.GetAllComponents(sceneObjects);
+            });
 
             foreach (var sceneComponent in sceneComponents)
             {

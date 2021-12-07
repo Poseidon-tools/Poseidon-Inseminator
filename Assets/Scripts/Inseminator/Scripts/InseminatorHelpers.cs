@@ -38,6 +38,17 @@
             }
             return components;
         }
+        
+        public static List<MonoBehaviour> GetComponentsExceptTypes(List<GameObject> sourceObjectsList, List<Type> excludedTypes)
+        {
+            List<MonoBehaviour> components = new List<MonoBehaviour>();
+            
+            foreach (var listItem in sourceObjectsList)
+            {
+                components.AddRange(listItem.GetComponents<MonoBehaviour>().Where(c => !excludedTypes.Contains(c.GetType())).ToList());
+            }
+            return components;
+        }
         #endregion
 
         #region Private Methods
