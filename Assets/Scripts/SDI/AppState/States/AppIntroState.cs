@@ -1,14 +1,14 @@
 ﻿namespace SDI.AppState.States
 {
     using Core.ViewManager;
+    using Inseminator.Scripts;
     using Poseidon.StateMachine;
-    using PoseidonDI.Scripts;
     using Views;
 
     public class AppIntroState : State<ApplicationState>
     {
         #region Private Variables
-        [PoseidonAttributes.Injectable] private ViewManager viewManager;
+        [InseminatorAttributes.Injectable] private ViewManager viewManager;
         private ApplicationIntroView introView;
         #endregion
         #region Public Methods

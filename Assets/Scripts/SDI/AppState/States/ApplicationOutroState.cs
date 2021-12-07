@@ -1,16 +1,16 @@
 ﻿namespace SDI.AppState.States
 {
     using Core.ViewManager;
+    using Inseminator.Scripts;
+    using Inseminator.Scripts.Factory;
     using Poseidon.StateMachine;
-    using PoseidonDI.Scripts;
-    using PoseidonDI.Scripts.Factory;
     using Views;
 
     public class ApplicationOutroState : State<ApplicationState>
     {
         #region Private Variables
-        [PoseidonAttributes.Injectable] private ViewManager viewManager;
-        [PoseidonAttributes.Injectable] private PoseidonFactory factory;
+        [InseminatorAttributes.Injectable] private ViewManager viewManager;
+        [InseminatorAttributes.Injectable] private InseminatorMonoFactory factory;
         private ApplicationOutroView outroView;
 
         private int maxItems = 4;

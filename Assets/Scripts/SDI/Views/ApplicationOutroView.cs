@@ -1,7 +1,7 @@
 ﻿namespace SDI.Views
 {
     using Core.ViewManager;
-    using PoseidonDI.Scripts.Example;
+    using Inseminator.Scripts.Example;
     using UnityEngine;
     using UnityEngine.UI;
 

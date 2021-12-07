@@ -273,15 +273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d14030ac1361478a864e928e5d77b4d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   declaredInstallers:
   - {fileID: 2073360830}
 --- !u!4 &60492138
@@ -400,7 +391,7 @@ PrefabInstance:
       objectReference: {fileID: 1315649255}
     - target: {fileID: 3873321592931710374, guid: e3cf66adf0863ba4e87bc2590ec94862, type: 3}
       propertyPath: m_Name
-      value: PoseidonDIManager
+      value: InseminatorManager
       objectReference: {fileID: 0}
     - target: {fileID: 4839971673776981057, guid: e3cf66adf0863ba4e87bc2590ec94862, type: 3}
       propertyPath: m_RootOrder
@@ -950,14 +941,7 @@ MonoBehaviour:
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: stateMachineRunner
-      Entry: 7
-      Data: 0|Core.StateMachine.StateMachineRunner`2[[SDI.AppState.AppStateManager,
-        Assembly-CSharp],[SDI.AppState.ApplicationState, Assembly-CSharp]], Assembly-CSharp
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
   appViewManager: {fileID: 1239911568}
   messageDispatcher: {fileID: 11400000, guid: 381904c7f1b3e8247b13b1bde064b120, type: 2}
 --- !u!4 &1095376335
@@ -1388,18 +1372,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb40610d694489aad1e4e5330300ae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   declaredInstallers:
-  - {fileID: 1415313601}
   - {fileID: 1983883981}
+  - {fileID: 1415313601}
 --- !u!4 &1275192003
 Transform:
   m_ObjectHideFlags: 0
@@ -1500,15 +1475,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e475e327394abfa097fbadea121492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
   declaredInstallers:
   - {fileID: 1072460448}
   scriptableObjects:
@@ -2539,7 +2505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2217501458116175226, guid: 8b21f8b9521d4614384e2625173063be, type: 3}
       propertyPath: m_Name
-      value: PoseidonFactory
+      value: InseminatorMonoFactory
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b21f8b9521d4614384e2625173063be, type: 3}

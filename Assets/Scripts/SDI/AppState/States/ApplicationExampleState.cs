@@ -1,26 +1,26 @@
 ﻿namespace SDI.AppState.States
 {
     using Core.ViewManager;
+    using Inseminator.Scripts;
+    using Inseminator.Scripts.Example;
     using Poseidon.StateMachine;
-    using PoseidonDI.Scripts;
-    using PoseidonDI.Scripts.Example;
     using Views;
 
     public class ApplicationExampleState : State<ApplicationState>
     {
         #region Private Variables
-        [PoseidonAttributes.Injectable]
+        [InseminatorAttributes.Injectable]
         private ViewManager viewManager;
 
-        [PoseidonAttributes.Injectable]
+        [InseminatorAttributes.Injectable]
         private MessageData messageData;
 
-        [PoseidonAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
+        [InseminatorAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
         private ITextLogger testLogger;
 
         private ApplicationExampleView exampleView;
 
-        [PoseidonAttributes.NestedInjectable]
+        [InseminatorAttributes.NestedInjectable]
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods
