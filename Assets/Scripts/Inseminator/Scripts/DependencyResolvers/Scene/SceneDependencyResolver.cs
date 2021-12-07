@@ -7,28 +7,20 @@
     using Resolver;
     using UnityEngine;
 
-    public class SceneDependencyResolver : PoseidonDependencyResolver
+    public class SceneDependencyResolver : InseminatorDependencyResolver
     {
         #region Protected Variables
         protected List<MonoBehaviour> sceneComponents;
         #endregion
         #region Public API
-        public void ResolveExternalGameObject(ref GameObject externalInstance)
-        {
-            var components = InseminatorHelpers.GetAllComponents(new List<GameObject>() {externalInstance});
-            foreach (var externalComponent in components)
-            {
-                var instance = (object)externalComponent;
-                ResolveDependencies(ref instance);
-            }
-        }
+        
         #endregion
         #region Resolving
         protected override void GetTargetObjects()
         {
             var sceneObjects = InseminatorHelpers.GetSceneObjectsExceptTypes(new List<Type>()
             {
-                typeof(PoseidonDependencyResolver), 
+                typeof(InseminatorDependencyResolver), 
                 typeof(InseminatorInstaller)
             }, gameObject.scene);
             sceneComponents = InseminatorHelpers.GetAllComponents(sceneObjects);
@@ -46,7 +38,7 @@
         {
             base.Install(installers);
             //add self to dependencies
-            registeredDependencies.Add(typeof(SceneDependencyResolver), new List<InstallerEntity>
+            registeredDependencies.Add(typeof(InseminatorDependencyResolver), new List<InstallerEntity>
             {
                 new InstallerEntity
                 {

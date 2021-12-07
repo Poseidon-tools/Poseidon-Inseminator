@@ -10,7 +10,7 @@
     {
         #region Inspector
         [SerializeField, Header("Resolvers")]
-        private List<PoseidonDependencyResolver> resolvers = new List<PoseidonDependencyResolver>();
+        private List<InseminatorDependencyResolver> resolvers = new List<InseminatorDependencyResolver>();
         #endregion
 
         #region Unity Methods
@@ -27,7 +27,7 @@
         #region Editor Button
         private void Refresh()
         {
-            resolvers = FindObjectsOfType<PoseidonDependencyResolver>().ToList();
+            resolvers = FindObjectsOfType<InseminatorDependencyResolver>().ToList();
         }
         #endregion
     }

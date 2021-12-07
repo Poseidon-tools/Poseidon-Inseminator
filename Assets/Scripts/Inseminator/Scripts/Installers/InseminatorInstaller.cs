@@ -8,7 +8,7 @@
     {
         #region Installer API
         [UsedImplicitly]
-        public abstract void InstallBindings(PoseidonDependencyResolver poseidonDependencyResolver);
+        public abstract void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver);
         #endregion
     }
 }

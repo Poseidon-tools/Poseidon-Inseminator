@@ -4,6 +4,6 @@
 
     public interface IInseminatorInstaller
     {
-        void InstallBindings(PoseidonDependencyResolver poseidonDependencyResolver);
+        void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver);
     }
 }

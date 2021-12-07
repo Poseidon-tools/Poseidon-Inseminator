@@ -43,12 +43,11 @@
         #region Private Methods
         private static void GetChildrenWithCondition(GameObject parentObject, List<GameObject> outputList, Predicate<GameObject> condition)
         {
-            if (!condition.Invoke(parentObject))
+            if (condition.Invoke(parentObject))
             {
-                return;
+                outputList.Add(parentObject);
             }
             int childCount = parentObject.transform.childCount;
-            outputList.Add(parentObject);
             for (int i = 0; i < childCount; i++)
             {
                 GetChildrenWithCondition(parentObject.transform.GetChild(i).gameObject, outputList, condition);

@@ -1,10 +1,8 @@
 ﻿namespace SDI.CubbyCustomResolvers.Modules
 {
     using System;
-    using System.Linq;
     using System.Reflection;
     using Poseidon.StateMachine;
-    using UnityEngine;
 
     public class StateMachineResolver
     {
@@ -24,18 +22,15 @@
                 // check if array is the states array
                 var elementType = propertyInfo.PropertyType.GetElementType();
                 if (elementType == null || !elementType.IsGenericType) continue;
-                if (elementType.GetGenericTypeDefinition() == typeof(State<>))
-                {
-                    //Debug.Log("Found states array!");
-                    var statesArray = propertyInfo.GetValue(stateManagerInstance) as object[];
-                    ResolveStates(statesArray);
-                }
+                if (elementType.GetGenericTypeDefinition() != typeof(State<>)) continue;
+                //Debug.Log("Found states array!");
+                var statesArray = propertyInfo.GetValue(stateManagerInstance) as object[];
+                ResolveStates(statesArray);
             }
         }
 
         private void ResolveStates(object[] statesArray)
         {
-            //Debug.Log($"States count: {statesArray.Length}");
             foreach (var state in statesArray)
             {
                 var stateInstance = state;

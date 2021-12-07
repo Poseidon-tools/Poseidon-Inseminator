@@ -13,15 +13,15 @@
         #endregion
         
         #region Public Methods
-        public override void InstallBindings(PoseidonDependencyResolver poseidonDependencyResolver)
+        public override void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)
         {
-            poseidonDependencyResolver.Bind<ITextLogger>(new TestLogger(), "TestLogger");
-            poseidonDependencyResolver.Bind<ITextLogger>(new GreenTextLogger(), "GreenTextLogger");
-            poseidonDependencyResolver.Bind<ITextLogger>(new CustomLogger(Color.red, 60), "CustomLoggerRed60");
+            inseminatorDependencyResolver.Bind<ITextLogger>(new TestLogger(), "TestLogger");
+            inseminatorDependencyResolver.Bind<ITextLogger>(new GreenTextLogger(), "GreenTextLogger");
+            inseminatorDependencyResolver.Bind<ITextLogger>(new CustomLogger(Color.red, 60), "CustomLoggerRed60");
             
-            poseidonDependencyResolver.Bind<ViewManager>(sceneViewManager);
+            inseminatorDependencyResolver.Bind<ViewManager>(sceneViewManager);
             
-            poseidonDependencyResolver.Bind<MessageData>(sampleMessage);
+            inseminatorDependencyResolver.Bind<MessageData>(sampleMessage);
         }
         #endregion
     }

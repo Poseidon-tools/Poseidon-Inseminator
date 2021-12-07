@@ -11,9 +11,9 @@
         #endregion
         
         #region Public Methods
-        public override void InstallBindings(PoseidonDependencyResolver poseidonDependencyResolver)
+        public override void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)
         {
-            poseidonDependencyResolver.Bind<MessageData>(sampleMessage);
+            inseminatorDependencyResolver.Bind<MessageData>(sampleMessage);
         }
         #endregion
     }

@@ -9,7 +9,7 @@
     using UnityEngine;
     using Utils;
 
-    public abstract class PoseidonDependencyResolver : MonoBehaviour
+    public abstract class InseminatorDependencyResolver : MonoBehaviour
     {
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
@@ -29,6 +29,16 @@
             OnBeforeGetObjects();
             GetTargetObjects();
             OnAfterGetObjects();
+        }
+        
+        public virtual void ResolveExternalGameObject(ref GameObject externalInstance)
+        {
+            var components = InseminatorHelpers.GetAllComponents(new List<GameObject>() {externalInstance});
+            foreach (var externalComponent in components)
+            {
+                var instance = (object)externalComponent;
+                ResolveDependencies(ref instance);
+            }
         }
 
         public void Bind<T>(T objectInstance, string instanceId = "")

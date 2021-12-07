@@ -1,10 +1,12 @@
 ﻿namespace Inseminator.Scripts.DependencyResolvers.GameObject
 {
     using System.Collections.Generic;
+    using Data;
+    using Installers;
     using Resolver;
     using UnityEngine;
 
-    public class GameObjectDependencyResolver : PoseidonDependencyResolver
+    public class GameObjectDependencyResolver : InseminatorDependencyResolver
     {
         #region Resolving
         protected override void GetTargetObjects()
@@ -17,6 +19,20 @@
                 var instance = (object)component;
                 ResolveDependencies(ref instance);
             }
+        }
+
+        protected override void Install(List<InseminatorInstaller> installers)
+        {
+            base.Install(installers);
+            
+            registeredDependencies.Add(typeof(InseminatorDependencyResolver), new List<InstallerEntity>
+            {
+                new InstallerEntity
+                {
+                    Id = "",
+                    ObjectInstance = this
+                }
+            });
         }
 
         private void GetChildren(GameObject parentObject, List<GameObject> outputList)

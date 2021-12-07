@@ -6,7 +6,7 @@
     using UnityEngine;
     using Utils;
 
-    public class ScriptableObjectDependencyResolver : PoseidonDependencyResolver
+    public class ScriptableObjectDependencyResolver : InseminatorDependencyResolver
     {
         #region Inspector
         [SerializeField, Header("ScriptableObjects")]
