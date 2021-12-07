@@ -1,4 +1,4 @@
-namespace Core.StateMachine
+namespace Poseidon.StateMachine
 {
     public interface IUpdatable
     {

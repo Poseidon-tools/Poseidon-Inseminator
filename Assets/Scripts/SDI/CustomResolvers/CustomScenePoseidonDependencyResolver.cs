@@ -1,45 +1,25 @@
 ﻿namespace SDI.CustomResolvers
 {
-    using System;
-    using System.Collections.Generic;
-    using Core.MessageDispatcher;
-    using Core.MessageDispatcher.Interfaces;
-    using Core.StateMachine.CustomMessages.Tools;
     using CubbyCustomResolvers.Modules;
     using PoseidonDI.Scripts.DependencyResolvers.Scene;
     using UnityEngine;
 
     [DefaultExecutionOrder(-50)]
-    public class CustomScenePoseidonDependencyResolver : ScenePoseidonDependencyResolver, IMessageReceiver
+    public class CustomScenePoseidonDependencyResolver : ScenePoseidonDependencyResolver
     {
         #region Private Variables
         private StateMachineResolver stateMachineResolver = new StateMachineResolver();
         #endregion
-        #region Unity Methods
-        private void Awake()
+        #region Overrides
+        public override void OnAfterGetObjects()
         {
-            MessageDispatcher.Instance.RegisterReceiver(this);
-        }
-
-        private void OnDisable()
-        {
-            MessageDispatcher.Instance.UnregisterReceiver(this);
-        }
-        #endregion
-        #region Runtime Messages
-        List<Type> IMessageReceiver.ListenedTypes => new List<Type>(){typeof(StateMachineToolMessages.OnStateRunnerStatusChanged)};
-
-        void IMessageReceiver.OnMessageReceived(object message)
-        {
-            if (message is StateMachineToolMessages.OnStateRunnerStatusChanged stateRunnerStatusChanged)
+            foreach (var sceneComponent in sceneComponents)
             {
-                if (stateRunnerStatusChanged.IsInitialized)
-                {
-                    stateMachineResolver.ResolveStateMachineDependencies(stateRunnerStatusChanged.StateRunner, ResolveWithRefWrapper);
-                }
+                stateMachineResolver.ResolveStateMachines(sceneComponent, ResolveWithRefWrapper);
             }
         }
         #endregion
+        
         #region Helpers
         private void ResolveWithRefWrapper(object resolvedObject)
         {

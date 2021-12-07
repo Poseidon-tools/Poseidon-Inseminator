@@ -9,6 +9,9 @@
 
     public class ScenePoseidonDependencyResolver : PoseidonDependencyResolver
     {
+        #region Protected Variables
+        protected List<MonoBehaviour> sceneComponents;
+        #endregion
         #region Public API
         public void ResolveExternalGameObject(ref GameObject externalInstance)
         {
@@ -28,7 +31,7 @@
                 typeof(PoseidonDependencyResolver), 
                 typeof(PoseidonInstaller)
             }, gameObject.scene);
-            var sceneComponents = PoseidonHelpers.GetAllComponents(sceneObjects);
+            sceneComponents = PoseidonHelpers.GetAllComponents(sceneObjects);
 
             foreach (var sceneComponent in sceneComponents)
             {

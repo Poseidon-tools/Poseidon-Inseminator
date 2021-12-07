@@ -1,7 +1,7 @@
 ﻿namespace SDI.AppState.States
 {
-    using Core.StateMachine;
     using Core.ViewManager;
+    using Poseidon.StateMachine;
     using PoseidonDI.Scripts;
     using PoseidonDI.Scripts.Example;
     using Views;
@@ -24,10 +24,7 @@
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods
-        public ApplicationExampleState(IStateManager<ApplicationState> stateManager, ApplicationState stateType) 
-            : base(stateManager, stateType)
-        {
-        }
+        public override ApplicationState StateType => ApplicationState.ExampleState;
 
         public override void OnEnter()
         {
@@ -47,7 +44,7 @@
         #region Private Methods
         private void OnNextHandler()
         {
-            stateManager.SwitchState(ApplicationState.Outro);
+            StateMachine.SwitchState(ApplicationState.Outro);
         }
         #endregion
     }

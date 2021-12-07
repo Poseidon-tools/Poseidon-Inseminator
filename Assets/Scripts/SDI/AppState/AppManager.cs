@@ -1,8 +1,9 @@
 ﻿namespace SDI.AppState
 {
+    using System;
     using Core.MessageDispatcher;
-    using Core.StateMachine;
     using Core.ViewManager;
+    using Poseidon.StateMachine;
     using Sirenix.OdinInspector;
     using States;
     using UnityEngine;
@@ -14,21 +15,29 @@
         [SerializeField] private MessageDispatcher messageDispatcher;
         #endregion
         #region Private Variables
-        
-        [SerializeField] 
-        private StateMachineRunner<AppStateManager, ApplicationState> stateMachineRunner;
+
+        private StateMachine<ApplicationState> appStateManager = new StateMachine<ApplicationState>(
+            new State<ApplicationState>[]
+            {
+                new AppIntroState(),
+                new ApplicationExampleState(),
+                new ApplicationOutroState()
+            });
         #endregion
         #region Unity Methods
         private void Awake()
         {
-            stateMachineRunner = new StateMachineRunner<AppStateManager, ApplicationState>();
             appViewManager.Initialize();
-            stateMachineRunner.Initialize(new State<ApplicationState>[]
-            {
-                new AppIntroState(stateMachineRunner.StateManager, ApplicationState.Intro, appViewManager),
-                new ApplicationExampleState(stateMachineRunner.StateManager, ApplicationState.ExampleState),
-                new ApplicationOutroState(stateMachineRunner.StateManager, ApplicationState.Outro), 
-            }, ApplicationState.Intro);
+        }
+
+        private void OnEnable()
+        {
+            appStateManager.Run();
+        }
+
+        private void OnDisable()
+        {
+            appStateManager.Dispose();
         }
         #endregion
     }

@@ -3,54 +3,15 @@
     using System;
     using System.Linq;
     using System.Reflection;
-    using Core.StateMachine;
+    using Poseidon.StateMachine;
+    using UnityEngine;
 
     public class StateMachineResolver
     {
         #region Private Variables
         private Action<object> resolveMethod;
         #endregion
-        public void ResolveStateMachineDependencies(object stateMachineRunnerInstance, Action<object> resolveMethod)
-        {
-            this.resolveMethod = resolveMethod;
-            var fields = stateMachineRunnerInstance.GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-            var genericArgs = stateMachineRunnerInstance.GetType().GetGenericArguments();
-            foreach (var propertyInfo in fields)
-            {
-                if (genericArgs.All(genType => genType != propertyInfo.PropertyType))
-                {
-                    continue;
-                }
-                //Debug.Log($"Found generic type: {propertyInfo.PropertyType.GetNiceName()}");
-                Type targetType = propertyInfo.PropertyType;
-                while (targetType != null || targetType != typeof(StateManager<>))
-                {
-                    if (targetType.BaseType == null)
-                    {
-                        break;
-                    }
-
-                    targetType = targetType.BaseType;
-                    if (!targetType.IsGenericType) continue;
-                    //Debug.Log($"{targetType} | {targetType.GetGenericTypeDefinition()} | {targetType.GetGenericTypeDefinition() == typeof(StateManager<>)}");
-                    if (targetType.GetGenericTypeDefinition() == typeof(StateManager<>))
-                    {
-                        break;
-                    }
-                }
-                if (targetType.GetGenericTypeDefinition() != typeof(StateManager<>))
-                {
-                    continue;
-                }
-                // this is StateManager<>
-                var stateManagerInstance = propertyInfo.GetValue(stateMachineRunnerInstance);
-                
-                // get states from StateManager instance
-                GetStates(stateManagerInstance);
-            }
-        }
+       
         private void GetStates(object stateManagerInstance)
         {
             var properties = stateManagerInstance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -81,5 +42,35 @@
                 resolveMethod?.Invoke(stateInstance);
             }
         }
+
+        #region Experimental
+        public void ResolveStateMachines(object sourceObject, Action<object> resolveMethod)
+        {
+            this.resolveMethod = resolveMethod;
+            var fields = sourceObject.GetType()
+                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (var fieldInfo in fields)
+            {
+                var targetType = fieldInfo.FieldType;
+                if (!targetType.IsGenericType)
+                {
+                    //Debug.Log($"Field is not generic: {fieldInfo.Name}");
+                    continue;
+                }
+               
+                if (targetType.GetGenericTypeDefinition() != typeof(StateMachine<>))
+                {
+                    //Debug.Log($"Field is not StateMachine: {fieldInfo.Name}");
+                    continue;
+                }
+                // this is StateManager<>
+                //Debug.Log($"Found stateMachine: {fieldInfo.Name}");
+                var stateManagerInstance = fieldInfo.GetValue(sourceObject);
+                
+                // get states from StateManager instance
+                GetStates(stateManagerInstance);
+            }
+        }
+        #endregion
     }
 }

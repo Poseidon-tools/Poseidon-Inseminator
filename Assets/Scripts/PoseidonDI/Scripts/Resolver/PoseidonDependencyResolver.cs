@@ -22,8 +22,13 @@
         #region Public API
         public virtual void InitializeResolver()
         {
+            OnBeforeInstall();
             Install(declaredInstallers);
+            OnAfterInstall();
+            
+            OnBeforeGetObjects();
             GetTargetObjects();
+            OnAfterGetObjects();
         }
 
         public void Bind<T>(T objectInstance, string instanceId = "")
@@ -34,6 +39,14 @@
                 ObjectInstance = objectInstance
             });
         }
+
+        #region Lifecycle
+        public virtual void OnBeforeInstall(){ }
+        public virtual void OnAfterInstall(){ }
+        public virtual void OnBeforeGetObjects(){ }
+        public virtual void OnAfterGetObjects(){ }
+        #endregion
+        
         #endregion
         
         #region Resolving Core
@@ -74,11 +87,7 @@
             foreach (var fieldInfo in allInjectableFields)
             {
                 var injectAttribute = fieldInfo.GetCustomAttribute(typeof(PoseidonAttributes.Injectable), true);
-                if (injectAttribute == null)
-                {
-                    continue;
-                }
-                
+
                 if (!(injectAttribute is PoseidonAttributes.Injectable injectable)) continue;
                 var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);

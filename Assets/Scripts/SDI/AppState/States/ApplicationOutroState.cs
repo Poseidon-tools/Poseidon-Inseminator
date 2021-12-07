@@ -1,7 +1,7 @@
 ﻿namespace SDI.AppState.States
 {
-    using Core.StateMachine;
     using Core.ViewManager;
+    using Poseidon.StateMachine;
     using PoseidonDI.Scripts;
     using PoseidonDI.Scripts.Factory;
     using Views;
@@ -17,10 +17,8 @@
         private int itemCounter;
         #endregion
         #region Public Methods
-        public ApplicationOutroState(IStateManager<ApplicationState> stateManager, ApplicationState stateType) 
-            : base(stateManager, stateType)
-        {
-        }
+        public override ApplicationState StateType => ApplicationState.Outro;
+
         public override void OnEnter()
         {
             outroView = viewManager.GetView<ApplicationOutroView>();

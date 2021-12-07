@@ -1,75 +1,77 @@
-namespace Core.StateMachine
+namespace Poseidon.StateMachine
 {
     using System;
     using System.Collections.Generic;
+    using PlayerLoopUtils;
     using UnityEngine;
 
-    public abstract class StateManager<T> : IStateManager<T> where T : Enum
+    public class StateMachine<T> : IStateMachine<T> where T : Enum
     {
         #region Private Variables
         private Dictionary<T, State<T>> states;
-        private StateUpdater stateManagerUpdater;
+        private T initialState = default;
         #endregion
+        
         #region Public Variables
         public event Action<T> OnStateChanged;
         public State<T> PreviousState { get; private set; }
 
         public State<T> CurrentState { get; protected set; }
-
-        public State<T> NextState { get; private set; }
         
         public State<T>[] States { get; private set; }
         #endregion
 
         #region Public Methods
-        public virtual void Initialize(State<T>[] statesArray, T initialState, bool switchState = true)
+        
+        public StateMachine(State<T>[] statesArray, T initialState = default)
         {
-            stateManagerUpdater = StateUpdater.Instance;
-            stateManagerUpdater.OnUpdated += StateManagerUpdaterOnOnUpdate;
-               
-            State<T>[] appStates = statesArray;
-            States = appStates;
+            PlayerLoopRunner.OnUpdate += StateMachineManagerOnUpdate;
+            PlayerLoopRunner.OnPostLateUpdate += StateMachineManagerOnLateUpdate;
+
+            this.initialState = initialState;
+            States = statesArray;
             states = new Dictionary<T, State<T>>();
 
-            foreach (State<T> state in appStates)
+            foreach (var state in statesArray)
             {
                 RegisterState(state);
             }
-            if(switchState) SwitchState(initialState);
         }
-
-        public virtual void Dispose()
+        
+        public void Run()
         {
-            if(stateManagerUpdater != null)
-            {
-                stateManagerUpdater.OnUpdated -= StateManagerUpdaterOnOnUpdate;
-            }
+            SwitchState(initialState);
+        }
+        
+        public void Dispose()
+        {
+            PlayerLoopRunner.OnUpdate -= StateMachineManagerOnUpdate;
+            PlayerLoopRunner.OnPostLateUpdate -= StateMachineManagerOnLateUpdate;
+            
             CurrentState?.OnExit();
-            CurrentState = null;
+            CurrentState = null; 
         }
         #endregion
 
         private void RegisterState(State<T> newState)
         {
-            if (states.ContainsKey(newState.GetStateType()))
+            newState.StateMachine = this;
+            if (states.ContainsKey(newState.StateType))
             {
-                Debug.LogError($"[StatesManager] There is already {newState.GetStateType().ToString()} state type in dictionary.");
+                Debug.LogError($"[StatesManager] There is already {newState.StateType} state type in dictionary.");
                 return;
             }
 
-            states.Add(newState.GetStateType(), newState);
+            states.Add(newState.StateType, newState);
         }
 
         public void SwitchState(T stateType)
         {
-            NextState = states[stateType];
-
             if (CurrentState != null)
             {
                 if (CurrentState.IsTypeOf(stateType))
                 {
                     Debug.Log($"[StateManager] State {stateType} is already running");
-                    CurrentState.OnResume();
                     return;
                 }
                 CurrentState.OnExit();
@@ -86,19 +88,28 @@ namespace Core.StateMachine
             CurrentState = states[stateType];
 
             CurrentState.OnEnter();
-            OnStateChanged?.Invoke(CurrentState.GetStateType());
+            OnStateChanged?.Invoke(CurrentState.StateType);
         }
         
         public void SwitchToPrevious()
         {
             if (PreviousState == null) return;
-            SwitchState(PreviousState.GetStateType());
+            SwitchState(PreviousState.StateType);
         }
-        protected void StateManagerUpdaterOnOnUpdate()
+
+        private void StateMachineManagerOnUpdate()
         {
             if(CurrentState is IUpdatable updatableState)
             {
                 updatableState.OnUpdate();
+            }
+        }
+        
+        private void StateMachineManagerOnLateUpdate()
+        {
+            if(CurrentState is ILateUpdatable updatableState)
+            {
+                updatableState.OnLateUpdate();
             }
         }
     }

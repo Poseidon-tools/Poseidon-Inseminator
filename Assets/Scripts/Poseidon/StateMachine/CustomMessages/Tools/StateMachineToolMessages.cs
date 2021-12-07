@@ -1,4 +1,4 @@
-﻿namespace Core.StateMachine.CustomMessages.Tools
+﻿namespace Poseidon.StateMachine.CustomMessages.Tools
 {
     using System;
 
