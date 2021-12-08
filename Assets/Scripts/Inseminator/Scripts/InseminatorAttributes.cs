@@ -6,7 +6,7 @@
     {
         public class Inseminate: Attribute
         {
-            public string InstanceId;
+            public object InstanceId;
         }
         public class Surrogate : Attribute
         {

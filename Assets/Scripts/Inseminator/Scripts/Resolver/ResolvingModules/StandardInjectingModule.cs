@@ -64,14 +64,14 @@
             ResolveNested(ref instanceObject);
         }
 
-        private object ResolveSingleDependency(Type targetType, string instanceId = "")
+        private object ResolveSingleDependency(Type targetType, object instanceId = null)
         {
             if (!registeredDependencies.TryGetValue(targetType, out var dependency))
             {
                 Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}");
                 return default;
             }
-            if (instanceId.IsNullOrEmpty())
+            if (instanceId == null)
             {
                 return dependency[0].ObjectInstance;
             }
