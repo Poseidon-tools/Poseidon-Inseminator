@@ -9,8 +9,8 @@
     public class ApplicationOutroState : State<ApplicationState>
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
-        [InseminatorAttributes.Injectable] private InseminatorMonoFactory factory;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private InseminatorMonoFactory factory;
         private ApplicationOutroView outroView;
 
         private int maxItems = 4;

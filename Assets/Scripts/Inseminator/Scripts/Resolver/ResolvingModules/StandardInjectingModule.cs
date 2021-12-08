@@ -25,7 +25,7 @@
             var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (var fieldInfo in fields)
             {
-                var nestedInjectAttribute = fieldInfo.GetCustomAttribute<InseminatorAttributes.NestedInjectable>();
+                var nestedInjectAttribute = fieldInfo.GetCustomAttribute<InseminatorAttributes.Surrogate>();
                 if (nestedInjectAttribute == null)
                 {
                     continue;
@@ -55,9 +55,9 @@
             var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (var fieldInfo in allInjectableFields)
             {
-                var injectAttribute = fieldInfo.GetCustomAttribute(typeof(InseminatorAttributes.Injectable), true);
+                var injectAttribute = fieldInfo.GetCustomAttribute(typeof(InseminatorAttributes.Inseminate), true);
 
-                if (!(injectAttribute is InseminatorAttributes.Injectable injectable)) continue;
+                if (!(injectAttribute is InseminatorAttributes.Inseminate injectable)) continue;
                 var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);
             }

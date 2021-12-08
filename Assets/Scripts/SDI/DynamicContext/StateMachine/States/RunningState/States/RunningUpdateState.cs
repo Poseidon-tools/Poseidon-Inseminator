@@ -14,8 +14,8 @@
         #endregion
 
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
-        [InseminatorAttributes.Injectable] private ITextLogger textLogger;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
 
         private DynamicContextStatusView view;
         private const float TIME_TO_UPDATE = 1f;

@@ -9,7 +9,7 @@
         [SerializeField] private TMP_Text textRenderer;
         #endregion
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ITextLogger textLogger;
+        [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
         #endregion
         #region Unity Methods
         private void OnEnable()

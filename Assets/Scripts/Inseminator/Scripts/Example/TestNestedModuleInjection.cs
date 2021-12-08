@@ -6,9 +6,9 @@
     public class TestNestedModuleInjection 
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ViewManager usedViewManager;
-        [InseminatorAttributes.NestedInjectable] private NestedInNested nested = new NestedInNested();
-        [InseminatorAttributes.NestedInjectable(ForceInitialization = true)] private NestedInNested nestedUninitialized;
+        [InseminatorAttributes.Inseminate] private ViewManager usedViewManager;
+        [InseminatorAttributes.Surrogate] private NestedInNested nested = new NestedInNested();
+        [InseminatorAttributes.Surrogate(ForceInitialization = true)] private NestedInNested nestedUninitialized;
         #endregion
         #region Public API
         public void Alert()
@@ -25,8 +25,8 @@
     public class NestedInNested
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private MessageData messageData;
-        [InseminatorAttributes.NestedInjectable] private Nested3rdLevelTest deeperLevelTest = new Nested3rdLevelTest();
+        [InseminatorAttributes.Inseminate] private MessageData messageData;
+        [InseminatorAttributes.Surrogate] private Nested3rdLevelTest deeperLevelTest = new Nested3rdLevelTest();
         #endregion
         #region Public API
         
@@ -41,8 +41,8 @@
     public struct Nested3rdLevelTest
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private MessageData messageData;
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private MessageData messageData;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
         #endregion
         #region Public API
         

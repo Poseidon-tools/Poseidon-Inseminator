@@ -6,7 +6,7 @@
     public class GameObjectContextInjectionTest : MonoBehaviour
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private MessageData messageData;
+        [InseminatorAttributes.Inseminate] private MessageData messageData;
         #endregion
         #region Unity Methods
         private void Start()

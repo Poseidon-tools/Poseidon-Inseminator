@@ -6,7 +6,7 @@
     public class ExampleSOInjection : ScriptableObject
     {
         #region Inspector
-        [SerializeField, InseminatorAttributes.Injectable]
+        [SerializeField, InseminatorAttributes.Inseminate]
         private MessageData messageData;
         #endregion
     }

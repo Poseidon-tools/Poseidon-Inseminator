@@ -9,18 +9,18 @@
     public class ApplicationExampleState : State<ApplicationState>
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable]
+        [InseminatorAttributes.Inseminate]
         private ViewManager viewManager;
 
-        [InseminatorAttributes.Injectable]
+        [InseminatorAttributes.Inseminate]
         private MessageData messageData;
 
-        [InseminatorAttributes.Injectable(InstanceId = "CustomLoggerRed60")] 
+        [InseminatorAttributes.Inseminate(InstanceId = "CustomLoggerRed60")] 
         private ITextLogger testLogger;
 
         private ApplicationExampleView exampleView;
 
-        [InseminatorAttributes.NestedInjectable]
+        [InseminatorAttributes.Surrogate]
         private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
         #endregion
         #region Public Methods

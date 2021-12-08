@@ -17,8 +17,8 @@
         #endregion
 
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ITextLogger textLogger;
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
 
         private DynamicContextStatusView dynamicContextStatusView;
         #endregion

@@ -4,11 +4,11 @@
 
     public class InseminatorAttributes
     {
-        public class Injectable: Attribute
+        public class Inseminate: Attribute
         {
             public string InstanceId;
         }
-        public class NestedInjectable : Attribute
+        public class Surrogate : Attribute
         {
             public bool ForceInitialization = false;
         }

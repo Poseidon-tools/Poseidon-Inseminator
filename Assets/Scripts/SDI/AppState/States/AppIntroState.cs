@@ -8,7 +8,7 @@
     public class AppIntroState : State<ApplicationState>
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
         private ApplicationIntroView introView;
         #endregion
         #region Public Methods

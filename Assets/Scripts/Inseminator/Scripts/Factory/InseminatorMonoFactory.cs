@@ -7,7 +7,7 @@
     public class InseminatorMonoFactory : MonoBehaviour
     {
         #region Private Variables
-        [InseminatorAttributes.Injectable] private InseminatorDependencyResolver sceneDependencyResolver;
+        [InseminatorAttributes.Inseminate] private InseminatorDependencyResolver sceneDependencyResolver;
         #endregion
         #region Public API
         public virtual T Create<T>(T templateObject, Transform parent = null) where T : Component

@@ -14,7 +14,7 @@
         [SerializeField] private TMP_Text statusRenderer;
         #region private variables
         // this one should come from game object context
-        [InseminatorAttributes.Injectable] private ITextLogger textLogger;
+        [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
 
         private StateMachine<DynamicContextStateType> stateMachine = new StateMachine<DynamicContextStateType>(
             new State<DynamicContextStateType>[]

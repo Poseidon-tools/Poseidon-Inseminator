@@ -10,8 +10,8 @@
     {
         [SerializeField] private DynamicContextPrefab dynamicContextPrefab;
         #region Private Variables
-        [InseminatorAttributes.Injectable] private ViewManager viewManager;
-        [InseminatorAttributes.Injectable] private InseminatorMonoFactory monoFactory;
+        [InseminatorAttributes.Inseminate] private ViewManager viewManager;
+        [InseminatorAttributes.Inseminate] private InseminatorMonoFactory monoFactory;
         #endregion
         #region Unity Methods
         private void Start()
