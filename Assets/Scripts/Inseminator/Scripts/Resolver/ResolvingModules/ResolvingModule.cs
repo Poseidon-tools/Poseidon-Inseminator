@@ -1,9 +1,8 @@
 ﻿namespace Inseminator.Scripts.Resolver.ResolvingModules
 {
-    using System;
+    using UnityEngine;
 
-    [Serializable]
-    public abstract class ResolvingModule
+    public abstract class ResolvingModule : MonoBehaviour
     {
         public abstract void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject);
     }

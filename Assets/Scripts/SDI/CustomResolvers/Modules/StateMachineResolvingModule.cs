@@ -1,11 +1,9 @@
 ﻿namespace SDI.CustomResolvers.Modules
 {
-    using System;
     using CubbyCustomResolvers.Modules;
     using Inseminator.Scripts.Resolver;
     using Inseminator.Scripts.Resolver.ResolvingModules;
 
-    [Serializable]
     public class StateMachineResolvingModule : ResolvingModule
     {
         #region Private Variables

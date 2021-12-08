@@ -6,9 +6,7 @@
     using System.Reflection;
     using Data;
     using UnityEngine;
-    using Utils;
 
-    [Serializable]
     public sealed class StandardInjectingModule : ResolvingModule
     {
         private Dictionary<Type, List<InstallerEntity>> registeredDependencies;

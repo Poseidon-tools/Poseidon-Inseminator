@@ -5,10 +5,9 @@
     using Data;
     using Installers;
     using ResolvingModules;
-    using Sirenix.OdinInspector;
     using UnityEngine;
 
-    public abstract class InseminatorDependencyResolver : SerializedMonoBehaviour
+    public abstract class InseminatorDependencyResolver : MonoBehaviour
     {
         #region Public Variables
         public Dictionary<Type, List<InstallerEntity>> RegisteredDependencies => registeredDependencies;
