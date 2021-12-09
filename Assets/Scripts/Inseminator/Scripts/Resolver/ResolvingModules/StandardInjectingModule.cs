@@ -10,6 +10,8 @@
     public sealed class StandardInjectingModule : ResolvingModule
     {
         private Dictionary<Type, List<InstallerEntity>> registeredDependencies;
+        private InseminatorAttributes.Inseminate inseminateAttrCached;
+        private InseminatorAttributes.Surrogate surrogateAttrCached;
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
         {
@@ -23,14 +25,18 @@
             var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (var fieldInfo in fields)
             {
-                var nestedInjectAttribute = fieldInfo.GetCustomAttribute<InseminatorAttributes.Surrogate>();
-                if (nestedInjectAttribute == null)
+                if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Surrogate)))
+                {
+                    continue;
+                }
+                surrogateAttrCached = fieldInfo.GetCustomAttribute<InseminatorAttributes.Surrogate>(false);
+                if (surrogateAttrCached == null)
                 {
                     continue;
                 }
                 
                 var nestedInstance = fieldInfo.GetValue(parentInstance);
-                if (nestedInjectAttribute.ForceInitialization)
+                if (surrogateAttrCached.ForceInitialization)
                 {
                     nestedInstance = TryForceInitializeInstance(fieldInfo.FieldType);
                     if(nestedInstance == null)
@@ -53,10 +59,13 @@
             var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
             foreach (var fieldInfo in allInjectableFields)
             {
-                var injectAttribute = fieldInfo.GetCustomAttribute(typeof(InseminatorAttributes.Inseminate), true);
+                if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Inseminate)))
+                {
+                    continue;
+                }
+                inseminateAttrCached = fieldInfo.GetCustomAttribute<InseminatorAttributes.Inseminate>( false);
 
-                if (!(injectAttribute is InseminatorAttributes.Inseminate injectable)) continue;
-                var instance = ResolveSingleDependency(fieldInfo.FieldType, injectable.InstanceId);
+                var instance = ResolveSingleDependency(fieldInfo.FieldType, inseminateAttrCached.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);
             }
             ResolveNested(ref instanceObject);
