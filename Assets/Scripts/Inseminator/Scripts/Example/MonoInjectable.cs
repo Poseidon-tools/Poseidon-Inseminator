@@ -18,7 +18,7 @@
         {
             Debug.Log($"Hey, it's ${name} here! I'm using properly injected ViewManager: {viewManager.name}");
             
-            Invoke(nameof(InstantiateDynamicContextPrefab), 10f);
+            //Invoke(nameof(InstantiateDynamicContextPrefab), 10f);
         }
         #endregion
 
