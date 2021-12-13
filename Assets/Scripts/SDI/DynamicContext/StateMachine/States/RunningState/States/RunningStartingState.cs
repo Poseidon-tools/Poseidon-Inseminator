@@ -1,10 +1,11 @@
 ﻿namespace SDI.DynamicContext.StateMachine.States.RunningState.States
 {
+    using System;
     using System.Collections.Generic;
     using Core.ViewManager;
+    using Cysharp.Threading.Tasks;
     using Inseminator.Scripts;
     using Inseminator.Scripts.Example;
-    using MEC;
     using Poseidon.StateMachine;
     using Views;
 
@@ -23,12 +24,12 @@
         {
             base.OnEnter();
             textLogger.LogMessage("Starting...", viewManager.GetView<DynamicContextStatusView>().StatusRenderer);
-            Timing.RunCoroutine(WaitAndSwitch());
+            WaitAndSwitch();
         }
 
-        private IEnumerator<float> WaitAndSwitch(float timeInSeconds = 3f)
+        private async void WaitAndSwitch(float timeInSeconds = 3f)
         {
-            yield return Timing.WaitForSeconds(timeInSeconds);
+            await UniTask.Delay(TimeSpan.FromSeconds(timeInSeconds));
             StateMachine.SwitchState(RunningStateType.Update);
         }
     }

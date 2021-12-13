@@ -18,7 +18,7 @@
         {
             this.dependencyResolver = dependencyResolver;
             
-            bakingData = ReflectionBaker.GetBakingData();
+            bakingData = ReflectionBaker.Instance.BakingData;
             BakedDataLookup(sourceObject);
         }
         #endregion

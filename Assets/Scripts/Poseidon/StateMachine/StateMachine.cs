@@ -83,7 +83,7 @@ namespace Poseidon.StateMachine
                 return;
             }
 
-            Debug.Log($"[StateManager] State {stateType} is now active");
+            //Debug.Log($"[StateManager] State {stateType} is now active");
             PreviousState = CurrentState;
             CurrentState = states[stateType];
 

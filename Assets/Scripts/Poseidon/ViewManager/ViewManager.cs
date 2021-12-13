@@ -24,7 +24,7 @@
 
             foreach (View view in viewsReferences)
             {
-                Debug.Log($"[{this.name}] Setting up view {view.name}...");
+                //Debug.Log($"[{this.name}] Setting up view {view.name}...");
                 viewsDictionary.Add(view.GetType(), view);
                 view.Setup();
             }

@@ -1,5 +1,6 @@
 ﻿namespace Inseminator.Scripts.InseminatorUtilities.BakingModules
 {
+    using System.Collections.Generic;
     using System.Reflection;
     using Data.Baking;
     using Poseidon.StateMachine;
@@ -66,7 +67,15 @@
                 }
                 // this is StateManager<>
                 var stateManagerInstance = fieldInfo.GetValue(sourceObject);
-                
+                if (bakingData.StateMachinesBaked.TryGetValue(sourceObject.GetType(), out var fieldNames))
+                {
+                    fieldNames.Add(fieldInfo.Name);
+                }
+                else
+                {
+                    bakingData.StateMachinesBaked.Add(sourceObject.GetType(), new List<string>(){fieldInfo.Name});
+                }
+
                 // get states from StateManager instance
                 GetStates(stateManagerInstance, bakingData);
             }

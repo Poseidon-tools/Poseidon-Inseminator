@@ -2,7 +2,9 @@
 {
     using System;
     using System.Reflection;
+    using Inseminator.Scripts.Data.Baking;
     using Poseidon.StateMachine;
+    using UnityEngine;
 
     public class StateMachineResolver
     {
@@ -61,6 +63,25 @@
                 // this is StateManager<>
                 //Debug.Log($"Found stateMachine: {fieldInfo.Name}");
                 var stateManagerInstance = fieldInfo.GetValue(sourceObject);
+                
+                // get states from StateManager instance
+                GetStates(stateManagerInstance);
+            }
+        }
+
+        public void ResolveStateMachinesBaked(object sourceObject, Action<object> resolveMethod, ReflectionBakingData bakingData)
+        {
+            this.resolveMethod = resolveMethod;
+            if (!bakingData.StateMachinesBaked.TryGetValue(sourceObject.GetType(), out var stateMachinesList)) return;
+            foreach (var stateMachineFieldName in stateMachinesList)
+            {
+                var field = sourceObject.GetType().GetField(stateMachineFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (field == null)
+                {
+                    Debug.LogError($"Cannot resolve {stateMachineFieldName} field in {sourceObject.GetType().Name}");
+                    continue;
+                }
+                var stateManagerInstance = field.GetValue(sourceObject);
                 
                 // get states from StateManager instance
                 GetStates(stateManagerInstance);

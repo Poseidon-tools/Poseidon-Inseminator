@@ -23,6 +23,8 @@
         #region Public Variables
         public Dictionary<Type, List<InseminateFieldBakingData>> BakedInjectableFields => bakedInjectableFields;
         public Dictionary<Type, List<SurrogateFieldBakingData>> BakedSurrogateFields => bakedSurrogateFields;
+
+        public Dictionary<Type, List<string>> StateMachinesBaked = new Dictionary<Type, List<string>>();
         #endregion
         #region Private Variables
         private Dictionary<Type, List<InseminateFieldBakingData>> bakedInjectableFields = new Dictionary<Type, List<InseminateFieldBakingData>>();

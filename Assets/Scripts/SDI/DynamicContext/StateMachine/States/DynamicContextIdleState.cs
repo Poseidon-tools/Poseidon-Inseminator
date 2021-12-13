@@ -28,13 +28,12 @@
             dynamicContextStatusView = viewManager.GetView<DynamicContextStatusView>();
             viewManager.SwitchView<DynamicContextStatusView>();
             textLogger.LogMessage("Entered idle state.", dynamicContextStatusView.StatusRenderer);
-
-            Timing.RunCoroutine(WaitAndSwitch());
+            WaitAndSwitch();
         }
 
-        private IEnumerator<float> WaitAndSwitch(float timeInSeconds = 3f)
+        private async void WaitAndSwitch(float timeInSeconds = 3f)
         {
-            yield return Timing.WaitForSeconds(timeInSeconds);
+            await UniTask.Delay(TimeSpan.FromSeconds(timeInSeconds));
             StateMachine.SwitchState(DynamicContextStateType.Running);
         }
     }

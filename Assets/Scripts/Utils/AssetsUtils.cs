@@ -46,6 +46,30 @@
             }
             return result;
         }
+        
+        /// <summary>
+        /// Since 2020.x versions the "t:<component>" filter is broken and seems to not work properly with prefabs in assets.
+        /// So as fallback method this approach can be used. It's much slower, but it's effectively returning prefabs with components.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> FindPrefabs<T>(string[] searchInFolders = null) where T : Object
+        {
+            var guids = AssetDatabase.FindAssets($"t:Prefab", searchInFolders);
+            var result = new List<T>();
+            foreach(string t in guids)
+            {
+                var assetPath = AssetDatabase.GUIDToAssetPath( t );
+                var asset = AssetDatabase.LoadAssetAtPath<GameObject>( assetPath );
+                if( asset != null  && asset.GetComponent<T>() != null )
+                {
+                    result.Add(asset.GetComponent<T>());
+                }
+            }
+
+            return result;
+        }
+
 
         public static T FindFirstAsset<T>() where T : Object
         {

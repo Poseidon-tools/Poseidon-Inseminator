@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using InseminatorUtilities;
     using Resolver;
     using UnityEngine;
 
@@ -16,6 +17,7 @@
         #region Unity Methods
         private void Awake()
         {
+            ReflectionBaker.Instance.Initialize();
             Refresh();
             foreach (var dependencyResolver in resolvers)
             {
