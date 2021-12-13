@@ -1,4 +1,4 @@
-﻿namespace Inseminator.Scripts.InseminatorUtilities.BakingModules
+﻿namespace Inseminator.Scripts.ReflectionBaking.BakingModules
 {
     using System.Collections.Generic;
     using System.Reflection;

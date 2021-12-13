@@ -1,4 +1,4 @@
-﻿namespace Inseminator.Scripts.InseminatorUtilities
+﻿namespace Inseminator.Scripts.ReflectionBaking
 {
     using System;
     using System.Collections.Generic;
@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using BakingModules;
+    using Data;
     using Data.Baking;
     using Installers;
     using Newtonsoft.Json;
@@ -78,7 +79,8 @@
 
         private void BakeFromAssets()
         {
-            var allProjectGO = AssetsUtils.FindPrefabs<Transform>().Select(t => t.gameObject).ToList();
+            var settings = AssetsUtils.FindFirstAsset<InseminatorSettings>();
+            var allProjectGO = AssetsUtils.FindPrefabs<Transform>(settings != null ? settings.BakeablePrefabsPaths.ToArray() : null).Select(t => t.gameObject).ToList();
             var allComponents = InseminatorHelpers.GetComponentsExceptTypes(allProjectGO, new List<Type>()
             {
                 typeof(InseminatorDependencyResolver),

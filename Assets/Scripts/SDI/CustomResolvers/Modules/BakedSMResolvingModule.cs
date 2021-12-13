@@ -1,7 +1,7 @@
 ﻿namespace SDI.CustomResolvers.Modules
 {
     using CubbyCustomResolvers.Modules;
-    using Inseminator.Scripts.InseminatorUtilities;
+    using Inseminator.Scripts.ReflectionBaking;
     using Inseminator.Scripts.Resolver;
     using Inseminator.Scripts.Resolver.ResolvingModules;
 

@@ -1,4 +1,4 @@
-﻿namespace Inseminator.Scripts.InseminatorUtilities.BakingModules
+﻿namespace Inseminator.Scripts.ReflectionBaking.BakingModules
 {
     using Data.Baking;
 

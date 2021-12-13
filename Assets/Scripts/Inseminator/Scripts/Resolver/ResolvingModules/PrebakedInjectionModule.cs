@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using Data.Baking;
-    using InseminatorUtilities;
+    using ReflectionBaking;
     using UnityEngine;
 
     public class PrebakedInjectionModule : ResolvingModule
