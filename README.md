@@ -5,7 +5,7 @@ Inseminator is a **dependency injection** framework built specifically to target
 ## Status
 #### Addon status: in development
 Must-have todo list:
-* resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)
+* ~~resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)~~ -> **reflection baking**
 * property injection
 * support injection to GameObject resolvers from scene resolver if needed
 
@@ -96,3 +96,96 @@ public class MonoInjectable : MonoBehaviour
 As a result you'll see message logged in console, and suprisingly no NullReferenceException error, although at first glance it seems that viewManager can't have value, because it's nor exposed in inspector or initialized via any method.
 
 Using `[Insemine]` attribute is only a top of an iceberg, but it's required to tell Inseminator system that you have field in your component, waiting for value to be injected. Next step is dependency resolvers setup.
+
+### Dependency resolvers
+Basically dependency resolver is a container, which will deal with installing and assigning dependencies. **Each dependency resolver is considered as separate scope** (working on scope parenting at this moment). For now, you cannot establish communication between subscope and main scope. It means that each of your dependency resolvers should be self-sufficient and should be able to serve dependencies in it's scope on it's own. This will become more understandable after default resolvers introduction part.
+#### Default resolvers
+Inseminator comes with 3 default dependency resolvers included:
+
+ - Scene dependency resolver
+ - Game object dependency resolver
+ - Scriptable object dependency resolver
+ 
+The most important resolver is the **scene dependency resolver**. In case of scene-wide dependencies, you'll definitely be using this one most of the time.
+
+**Game object resolver** lets you cut off from main scene scope and create subscope for game object and it's children. For example, if you'll be using some dynamic loaded AR prefab with complex internal structure (like state machine, separate UI, minigames etc), you'll probably want to use other set of dependencies for this internal structure.
+For now, game object resolver isn't able to communicate with scene scope or any parent scope in order to borrow some of their dependencies, but this is a feature that Inseminator definitely lacks and will be added ASAP.
+
+**Scriptable object dependency resolver** works just like game object dependency resolver, with one difference - it's operating on scriptable objects found in project. You can inject values inside the scriptable objects and these values will be legit in build.
+
+#### How it works
+Dependency resolver is obligated to deal with main DI process - it should gather all objects interested in injecting, install dependency bindings and finally inject values.
+To keep things simple, dependency resolver is not doing any complex operations on it's own. It should be rather considered as DI control center, which is using modules to accomplish DI-process.
+
+The DI process is based on two operations: dependency installation & binding and dependency injection.
+Dependencies are installed and registered in DI lookup dictionary via Installers, and dependency resolving modules are looking for fields/properties/custom things to accomplish injecting operation.
+
+Both installers and dependency resolving modules can be easily added/removed or swapped using inspector of dependency resolver.
+
+### Installers & Binding
+First step to create new dependency, that will be injected to other places, is to create installer and binding.
+
+Installer has only one task - tell the dependency resolver, that there are certain bindings for certain types. It's not strictly set that you should create separate installer for every new binding - you also can keep everything in one installer, but we're recommending splitting installers into logical chunks.
+
+**Creating an installer**
+
+To create new installer, simply make a new class and derive from `InseminatorInstaller`. Next, implement method 
+```C#
+InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)
+``` 
+which is required in every new installer.
+
+Let's assume you want to install 3 instances of text loggers, and each is derived from ITextLogger interface.
+Nothing more simpler, just fill body of overriden method with .Bind<> calls to the dependency resolver:
+```C#
+public override void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)  
+{  
+	//simple logger, nothing fancy
+	 inseminatorDependencyResolver.Bind<ITextLogger>(new TestLogger(), "TestLogger");  
+ 	// logger which will log text colored to green
+	 inseminatorDependencyResolver.Bind<ITextLogger>(new GreenTextLogger(), "GreenTextLogger");  
+  	// logger which will log text colored to red, with font size of 60
+	 inseminatorDependencyResolver.Bind<ITextLogger>(new CustomLogger(Color.red, 60), "CustomLoggerRed60");
+}
+```
+
+What exactly to pass in the call?
+First, specify the target binding **type in <>** braces. In this case, we want to bind new instances to the ITextLogger type.
+Then, **pass the instance of your type** as first method param.
+**Optionally**, pass the **instance identifier as second method** param.
+
+**Instance identifier is extremely important** in cases, when you have **more than one bindings for certain type** - like we do in this example. So, with more than one binding per type, you should use instance identifiers. It's up to you what will be the id - it could be string, enum, type or anything else. Just remember, that later on you have to access this identifier in order to tell the DI system, that in this particular class you want to inject this particular instance of an object.
+
+When you're done with your bindings, **last thing to do is to create a installer object in your hierarchy** (good practice is to keep installers under some "Installers" object in your dependency resolver object's hierarchy) and **add it to the installers list in dependency resolver**. 
+When this is ready, you can specify what do you need to be injected in your class.
+
+### Insemination
+Let's say your class is pretty simple, and all you want to do is to print some red text.
+```C#
+public class TextPrinter : MonoBehaviour
+{  
+	[InseminatorAttributes.Inseminate(InstanceId = "CustomLoggerRed60")]
+	private ITextLogger testLogger;
+
+	private void OnEnter()
+	{
+		testLogger.LogMessage("some red text");
+	}
+ }
+```
+One and only thing you should worry about is to specify proper instance id in `[Inseminate]` attribute (if there is more than one binding for your target type). In installer example above, we just binded 3 different instances to ITextLogger type, so in order to print red text (as required), you need to specify proper instance id.
+
+### Dependency resolving modules
+Dependency resolver is not doing any magic itself. It's using resolving modules to perform injecting operations. Inseminator comes up with 3 basic modules, that will accomplish any "common" injection scenario, including nested injections and injections into Poseidon's state machines. 
+Also, **Inseminator is now armed** with alternate resolving conception - **reflection baking & prebaked resolving**.
+
+**Basics**
+
+In order to using Inseminator properly, all you have to know is that dependency resolving modules are running in DI-resolving process, once per every resolved object. This is the dirty work that should be made, and it's made by resolving modules. 
+
+Standard resolving module is basic module, that is looking for fields tagged with one of Inseminator attributes, and it's asking dependency resolver for binding requested by this particular field. If dependency is found, module is setting value of the field and the process is going from scratch for next field. It's the standard resolving module, but it's not the perfect one. 
+Dependency resolving includes a lot of reflection calls and some of them are really heavy(especially on mobile devices), so if you're targeting low-end devices with a lot of dynamic object instancing via factories etc, please read about reflection baking in next parts of docs.
+
+State machine resolving module is the next module included with Inseminator.  The principle stays unchanged - module is running over and over again for each of resolved objects. It's basically looking for StateMachine<T> fields in objects, and then for it's states. When states are found, it's calling dependency resolver to perform whole DI-resolving process for these states, so all the resolving modules will run on states. This mechanism let us resolve dependencies even in really, really deep places of your structure, like in states declared in state machine, which is declared in another state of another state machine, which is declared in one of scene objects.
+
+Todo: prebaked resolving module
