@@ -11,8 +11,12 @@
     using Installers;
     using Newtonsoft.Json;
     using Resolver;
+
+#if UNITY_EDITOR
     using UnityEditor;
     using UnityEditor.SceneManagement;
+#endif
+    
     using UnityEngine;
     using UnityEngine.SceneManagement;
     using Utils;
@@ -42,6 +46,7 @@
         {
             bakingData = LoadBakedData();
         }
+#if UNITY_EDITOR
         public void BakeAll()
         {
             bakingData = new ReflectionBakingData();
@@ -54,6 +59,7 @@
             
             SerializeBakingData(bakingData);
         }
+#endif
         public void BakeSingle(ref object singleObject)
         {
             PerformBaking(ref singleObject, bakingData);
@@ -61,6 +67,7 @@
         #endregion
 
         #region Private Methods
+#if UNITY_EDITOR
         private void BakeScene(Scene scene)
         {
             var sceneObjects = InseminatorHelpers.GetSceneObjectsExceptTypes(new List<Type>(), scene);
@@ -93,6 +100,7 @@
             }
             Debug.Log("Finished baking process for project types.");
         }
+#endif
         
         private void PerformBaking(ref object objectInstance, ReflectionBakingData bakingData)
         {
@@ -168,6 +176,7 @@
         #endregion
 
         #region Scenes
+#if UNITY_EDITOR
         private void LoadAllScenes()
         {
             var scenes = EditorBuildSettings.scenes;
@@ -182,9 +191,11 @@
 
             EditorSceneManager.OpenScene(scenes[0].path);
         }
+#endif
         #endregion
 
         #region Files
+#if UNITY_EDITOR_WIN
         private void SerializeBakingData(ReflectionBakingData bakingData)
         {
             var json = JsonConvert.SerializeObject(bakingData);
@@ -199,7 +210,7 @@
             string fullPath = $"{mainDirPath}/{filename}";
             File.WriteAllText(fullPath, json);
         }
-
+#endif
         private ReflectionBakingData DeserializeBakingData(string json)
         {
             ReflectionBakingData bakingData = JsonConvert.DeserializeObject<ReflectionBakingData>(json);
