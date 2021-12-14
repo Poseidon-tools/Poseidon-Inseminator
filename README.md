@@ -45,6 +45,7 @@ Table of content:
 	* Dependency resolvers
 	* Installers & Binding
 	* Resolving Modules
+* Reflection baking
 * Surrogates
 * Injecting into instantiated object
 	* Factories
@@ -176,7 +177,7 @@ public class TextPrinter : MonoBehaviour
 One and only thing you should worry about is to specify proper instance id in `[Inseminate]` attribute (if there is more than one binding for your target type). In installer example above, we just binded 3 different instances to ITextLogger type, so in order to print red text (as required), you need to specify proper instance id.
 
 ### Dependency resolving modules
-Dependency resolver is not doing any magic itself. It's using resolving modules to perform injecting operations. Inseminator comes up with 3 basic modules, that will accomplish any "common" injection scenario, including nested injections and injections into Poseidon's state machines. 
+Dependency resolver is not doing any magic itself. It's using resolving modules to perform injecting operations. Inseminator comes up with 4 basic modules, that will accomplish any "common" injection scenario, including nested injections and injections into Poseidon's state machines. 
 Also, **Inseminator is now armed** with alternate resolving conception - **reflection baking & prebaked resolving**.
 
 **Basics**
@@ -184,8 +185,38 @@ Also, **Inseminator is now armed** with alternate resolving conception - **refle
 In order to using Inseminator properly, all you have to know is that dependency resolving modules are running in DI-resolving process, once per every resolved object. This is the dirty work that should be made, and it's made by resolving modules. 
 
 Standard resolving module is basic module, that is looking for fields tagged with one of Inseminator attributes, and it's asking dependency resolver for binding requested by this particular field. If dependency is found, module is setting value of the field and the process is going from scratch for next field. It's the standard resolving module, but it's not the perfect one. 
-Dependency resolving includes a lot of reflection calls and some of them are really heavy(especially on mobile devices), so if you're targeting low-end devices with a lot of dynamic object instancing via factories etc, please read about reflection baking in next parts of docs.
+Dependency resolving includes a lot of reflection calls and some of them are really heavy(especially on mobile devices), so if you're targeting low-end devices with a lot of dynamic object instancing via factories etc, please read about reflection baking below.
 
 State machine resolving module is the next module included with Inseminator.  The principle stays unchanged - module is running over and over again for each of resolved objects. It's basically looking for StateMachine<T> fields in objects, and then for it's states. When states are found, it's calling dependency resolver to perform whole DI-resolving process for these states, so all the resolving modules will run on states. This mechanism let us resolve dependencies even in really, really deep places of your structure, like in states declared in state machine, which is declared in another state of another state machine, which is declared in one of scene objects.
 
-Todo: prebaked resolving module
+**Prebaked module**
+	
+The last default modules are the prebaked modules - one for resolving baked injection fields, second one for resolving baked state machines.
+These modules are used in dependency-baking approach, which is described below. Although both are still reflection based, they're faster and more memory-friendly than standard modules, because the amount of expensive reflection calls is reduced. 
+PrebakedInjectionModule is an baked alternate for StandardInjectingModule, and the BakedStateMachineResolvingModule is an alternate for StateMachineResolvingModule.
+
+	
+### Reflection baking
+As mentioned above, standard dependency resolving approach is pretty expensive thing if we consider it running dynamically in 60fps application. It's definitely worth using with many static scene dependencies and a few dynamic dependencies, or when the case is rather multi-screen bussiness-like app than super smooth mobile game. Often reflection calls can really slow down any app, so this is why dynamic dependency resolving could cause frame drops on low-end devices.
+
+But there is alternate approach for dependency resolving, and it's called reflection baking. The main idea of this approach is to avoid expensive reflection calls required to get informations about field's attributes. This approach can speed up even dynamic resolving without so much harrasment to the framerate - but you should be warned, that it's not perfect. It still need to spend some CPU time on injecting and allocate some memory to get it's bussiness done.
+
+	
+#### How to use
+To get this approach working, all you need to do is:
+* **use prebaked resolving module** in all your dependency resolvers, instead of standard resolving modules 
+* **regularly bake project** using menu option "Tools/Inseminator/Bake"
+* optionally you can enable useful checkbox in InseminatorSetting scriptable object, called "**Auto Bake On Build**" -> Inseminator will perform baking process before every build
+* next optional thing you can **specify is the Prefabs paths**: you can specify where to search for prefabs that require baking. **For larger projects is heavily recommended** to keep your bake-required prefabs in separate place and specify paths in settings, otherwise baking process could take much more time, cause it will search whole project for bakeable prefabs.
+
+**Injection stays the same** - you tag field with attribute (Inseminate or Surrogate) and prebaked resolver will handle rest of work for you.
+
+#### How it works
+The main issue in standard resolving process is the attributes resolving from fields. `GetCustomAttributes<>()` **call is really expensive** - it is allocating memory and it's using noticeable CPU time per single request. **Dependency resolving requires hundreds (and more) calls**, so the outcome is that framerate may drop badly when you'll try to dynamically instantiate new object(requiring some dependencies or having separate game object scope) via factory at runtime. 
+
+For simple resolving at the scene lifecycle beginning it's totally ok and **could be for example masked with some loading screen**, but frame drop caused by dynamic instantiation is almost impossible to hide.
+
+**What the baked approach does**, is to avoid these calls to GetCustomAttributes and, for example, resolving state machines at runtime (which requires also some heaviest reflection calls). **All the hard and resources-consuming work is done in baking process**, when baking modules are scanning objects scene by scene, prefab by prefab looking for bakeable fields, surrogates and state machines. When one of mentioned is found, **it's stored in dictionary, inside special data object**. Dictionary is matching the type of object with injectable/surrogate fields or state machine fields names.
+The baking data object is then saved as .json file inside Resources folder.
+
+At runtime, **baked dependency resolvers are not longer looking for any attributes or state machine fields**, but they **know exactly what to seek for** in particular object types - using dictionary with type/list of fields names matching. Thanks to this, resolving process is **much faster** (4-9x) and it's consuming about **3-10x less memory** (depending on resolving complexity). 
