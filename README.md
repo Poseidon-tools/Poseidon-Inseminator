@@ -301,4 +301,28 @@ public class DynamicItemExample : MonoBehaviour
 ```
 If `templateObject` will be instantiated using default approach, **NullReferenceException** will occur anytime calling textLogger.LogMessage method.
 It's all because scene objects are already resolved, and the DI-process is not running anymore, so the dependency in this instantiated object cannot be resolved.
-#### Factories - todo
+#### Factories
+To get instantiated object working properly(with its dependencies) with DI-system, you need to replace Instantiate calls with **MonoFactory**.
+
+`InseminatorMonoFactory` is prepared exactly for dealing with dynamic object instantiation and resolving its dependencies in a fly.
+
+#### How to use
+In order to use `InseminatorMonoFactory` for instantiating objects, you need to **install it first**.
+Just like installation of other dependencies, **all you have to do is to add FactoryInstaller** object somewhere in your resolver hierarchy, and then drag it to the installers list in resolver's inspector.
+
+**FactoryInstaller requires specifying InseminatorMonoFactory** instance that should be binded - but it should be already done for you when you drag'n'drop FactoryInstaller prefab into hierarchy. If somehow it's not, then create empty gameobject in FactoryInstaller hierarchy and add InseminatorMonoFactory component to it. Then drag this component to the FactoryInstaller inspector field waiting for InseminatorMonoFactory - and you're done.
+
+Next step is **injecting factory in place you want to use it** for instantiating objects at runtime.
+You can do it simply, just as any other field:
+`[InseminatorAttributes.Inseminate] private InseminatorMonoFactory factory;`
+
+And finally, for instantiating your object with resolved dependencies:
+
+`var item = factory.Create(outroView.TemplateItem, outroView.ItemsContainer);`
+
+The `Create<T>(template, parent)` method is a generic method, so you can pass to it anything what is derived from **Component** type (basically any of your MonoBehaviours), and it'll create this object for you. 
+
+After calling `Create` method (If there is no errors etc), your object is ready to go and you can reposition it etc.
+
+#### Custom factories
+You can create your own factory that will do more complex work for you. It's quite simple, because it works just as standard installed dependency, except factory have to have dependency resolver injected to be able to call resolving proces for freshly instantiated object. If you'll need to implement factory on your own, look at `InseminatorMonoFactory` class for reference.
