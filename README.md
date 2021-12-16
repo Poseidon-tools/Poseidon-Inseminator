@@ -220,3 +220,85 @@ For simple resolving at the scene lifecycle beginning it's totally ok and **coul
 The baking data object is then saved as .json file inside Resources folder.
 
 At runtime, **baked dependency resolvers are not longer looking for any attributes or state machine fields**, but they **know exactly what to seek for** in particular object types - using dictionary with type/list of fields names matching. Thanks to this, resolving process is **much faster** (4-9x) and it's consuming about **3-10x less memory** (depending on resolving complexity). 
+
+### Surrogates
+
+Making a surrogate field is a way to tell DI-system, that there is a object that does not exactly wait for value injection, but contains nested dependencies inside, that need to be also resolved. Of course, **you can create surrogate containing surrogates**, that's completely fine, so far as you you're injecting some value at the end. **Keeping empty surrogate fields** inside classes cause empty-searching for dependencies to resolve and **is slowing down resolving process**.
+
+#### How to use
+Let's assume that beside injecting directly values into the class fields, you want to have another object, that requires dependency resolving in its structure. All you have to do is marking this field with `[InseminatorAttributes.Surrogate]` attribute, optionally passing `ForceInitialization` param value.
+```C#
+[InseminatorAttributes.Surrogate]  
+private TestNestedModuleInjection nestedModuleInjection = new TestNestedModuleInjection();
+```
+With having this done, you can add injectable or surrogate field that need to be resolved.
+```C#
+public class TestNestedModuleInjection
+{  
+ #region Private Variables  
+ [InseminatorAttributes.Inseminate] private ViewManager usedViewManager;  
+ [InseminatorAttributes.Surrogate] private NestedInNested nested = new NestedInNested();  
+ [InseminatorAttributes.Surrogate(ForceInitialization = true)] private NestedInNested nestedUninitialized;
+ #endregion
+ // ... rest of the class
+ }
+```
+Let's take a closer look at these fields. `TestNestedModuleInjection` object is marked as surrogate field in another place in code, and it's containing one injectable field and two surrogates.
+So, the standard Inseminate field and standard surrogate field should not be a mystery now, but there is third field, with additional parameter for surrogate attribute.
+It's `ForceInitialization` property and it's used to tell DI-system, that **before resolving values inside this surrogate, it should be force initialized if it's not initialized yet**. So basically, you can have uninitialized object as surrogate, and it'll be initialized for you(if possible - remember, it **won't work for Unity's Mono objects**).
+Getting back to the class:
+```C#
+public class TestNestedModuleInjection
+{  
+ #region Private Variables  
+ [InseminatorAttributes.Inseminate] private ViewManager usedViewManager;  
+ [InseminatorAttributes.Surrogate] private NestedInNested nested = new NestedInNested();  
+ [InseminatorAttributes.Surrogate(ForceInitialization = true)] private NestedInNested nestedUninitialized;  
+ #endregion  
+ #region Public API  
+    public void Alert()  
+	 {
+		Debug.Log($"Used ViewManager is: {usedViewManager.name}", usedViewManager);
+		nested.Alert();
+		// variable was not initialized manually using ctor
+		nestedUninitialized.Alert();  
+	 }
+#endregion  
+}
+```
+The field `[InseminatorAttributes.Surrogate(ForceInitialization = true)] private NestedInNested nestedUninitialized;` is not initialized anywhere, and expected result of calling `nestedUninitialized.Alert()` method could be **NullReferenceException**. But, thanks to `ForceInitialize` param, the field **will be initialized during dependency resolving process** and it's structure also will be resolved.
+
+
+### Injecting into instantiated object
+As described previously, the main part of DI-process is performed at the scene startup. Scene objects are resolved and flow is going on. But the tricky part is when you want to instantiate new object on scene, and it's containing custom components requiring dependency resolving. 
+For the record - the standard Unity way of instantiating objects is following:
+```C#
+var newObject = Instantiate(templateObject, parent);
+```
+Let templateObject has one main component of DynamicItemExample type:
+```C#
+public class DynamicItemExample : MonoBehaviour  
+{  
+#region Inspector  
+	[SerializeField] private TMP_Text textRenderer;  
+#endregion  
+#region Private Variables  
+    [InseminatorAttributes.Inseminate] private ITextLogger textLogger;  
+#endregion
+#region Unity Methods  
+    private void OnEnable()
+    {
+    textLogger.LogMessage($"{name}", textRenderer);
+    }
+#endregion  
+#region Public API  
+    public void OverrideText(string text)
+    {
+	    textLogger.LogMessage(text, textRenderer);
+	}
+#endregion  
+}
+```
+If `templateObject` will be instantiated using default approach, **NullReferenceException** will occur anytime calling textLogger.LogMessage method.
+It's all because scene objects are already resolved, and the DI-process is not running anymore, so the dependency in this instantiated object cannot be resolved.
+#### Factories - todo
