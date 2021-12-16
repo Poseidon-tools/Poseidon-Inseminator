@@ -5,7 +5,7 @@
     using Inseminator.Scripts.Resolver;
     using Inseminator.Scripts.Resolver.ResolvingModules;
 
-    public class BakedSMResolvingModule : ResolvingModule
+    public class BakedStateMachineResolvingModule : ResolvingModule
     {
         #region Private Variables
         private StateMachineResolver stateMachineResolver;
