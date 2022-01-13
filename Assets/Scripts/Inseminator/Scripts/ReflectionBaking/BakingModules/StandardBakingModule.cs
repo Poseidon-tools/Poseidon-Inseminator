@@ -50,6 +50,7 @@
 
                 ReflectionBaker.UpdateBakingDataWithSurrogate(bakingData, parentInstance, memberInfo, surrogateAttr);
                 
+                var nestedInstance = memberInfo.GetValue(parentInstance);
                 if (surrogateAttr.ForceInitialization)
                 {
                     nestedInstance = Activator.CreateInstance(memberInfo.GetUnderlyingType());
