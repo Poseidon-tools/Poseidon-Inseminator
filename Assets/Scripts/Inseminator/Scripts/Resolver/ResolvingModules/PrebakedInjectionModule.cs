@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Reflection;
     using Data.Baking;
+    using Helpers;
     using ReflectionBaking;
     using UnityEngine;
 
@@ -12,6 +13,7 @@
         #region Private Variables
         private ReflectionBakingData bakingData;
         private InseminatorDependencyResolver dependencyResolver;
+        private MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
         #endregion
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
@@ -26,17 +28,23 @@
         #region Private Methods
         private void BakedDataLookup(object sourceObject)
         {
+            if (sourceObject == null)
+            {
+                return;
+            }
             if (!bakingData.BakedInjectableFields.TryGetValue(sourceObject.GetType(), out var fieldBakingDatas)) return;
             foreach (var fieldBakingData in fieldBakingDatas)
             {
-                var fieldInfo = sourceObject.GetType()
-                    .GetField(fieldBakingData.FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-                if (fieldInfo == null)
+                var memberInfo = memberInfoExtractor.GetMember(fieldBakingData.MemberType, fieldBakingData.MemberName,
+                    sourceObject, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                
+                if (memberInfo == null)
                 {
+                    Debug.LogError($"Failed to get member: {fieldBakingData.MemberName}");
                     continue;
                 }
-                var instance = ResolveSingleDependency(fieldInfo.FieldType, fieldBakingData.Attribute?.InstanceId);
-                fieldInfo.SetValue(sourceObject, instance);
+                var instance = ResolveSingleDependency(memberInfo.GetUnderlyingType(), fieldBakingData.Attribute?.InstanceId);
+                memberInfo.SetValue(sourceObject, instance);
             }
 
             ResolveNested(ref sourceObject);
@@ -44,6 +52,10 @@
         
         private void ResolveNested(ref object parentInstance)
         {
+            if (parentInstance == null)
+            {
+                return;
+            }
             if (!bakingData.BakedSurrogateFields.TryGetValue(parentInstance.GetType(),
                 out var surrogateFieldBakingDatas))
             {
@@ -52,28 +64,30 @@
 
             foreach (var surrogateFieldBakingData in surrogateFieldBakingDatas)
             {
-                var fieldInfo = parentInstance.GetType()
-                    .GetField(surrogateFieldBakingData.FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-                if (fieldInfo == null)
+                var memberInfo = memberInfoExtractor.GetMember(surrogateFieldBakingData.MemberType,
+                    surrogateFieldBakingData.MemberName, parentInstance,
+                    BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if (memberInfo == null)
                 {
+                    Debug.LogError($"Failed to get member: {surrogateFieldBakingData.MemberName}");
                     continue;
                 }
-                var nestedInstance = fieldInfo.GetValue(parentInstance);
+                var nestedInstance = memberInfo.GetValue(parentInstance);
                 if (surrogateFieldBakingData.Attribute.ForceInitialization)
                 {
-                    nestedInstance = Activator.CreateInstance(fieldInfo.FieldType);
+                    nestedInstance = Activator.CreateInstance(memberInfo.GetUnderlyingType());
                     if(nestedInstance == null)
                     {
                         Debug.LogError("Cannot create DI instance of object.");
                         continue;
                     }
-                    fieldInfo.SetValue(parentInstance, nestedInstance);
+                    memberInfo.SetValue(parentInstance, nestedInstance);
                 }
                     
                 BakedDataLookup(nestedInstance);
-                if (fieldInfo.FieldType.IsValueType)
+                if (memberInfo.GetUnderlyingType().IsValueType)
                 {
-                    fieldInfo.SetValue(parentInstance, nestedInstance);
+                    memberInfo.SetValue(parentInstance, nestedInstance);
                 }
             }
         }

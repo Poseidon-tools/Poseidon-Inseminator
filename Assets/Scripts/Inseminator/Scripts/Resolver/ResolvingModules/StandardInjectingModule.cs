@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Data;
+    using Helpers;
     using UnityEngine;
 
     public sealed class StandardInjectingModule : ResolvingModule
@@ -12,6 +13,8 @@
         private Dictionary<Type, List<InstallerEntity>> registeredDependencies;
         private InseminatorAttributes.Inseminate inseminateAttrCached;
         private InseminatorAttributes.Surrogate surrogateAttrCached;
+
+        private MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
         {
@@ -22,8 +25,10 @@
         
         private void ResolveNested(ref object parentInstance)
         {
-            var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in fields)
+            var members = memberInfoExtractor.GetMembers(MemberTypes.Field, parentInstance,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            members.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Property, parentInstance, BindingFlags.Instance | BindingFlags.Public));
+            foreach (var fieldInfo in members)
             {
                 if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Surrogate)))
                 {
@@ -37,7 +42,7 @@
                 var nestedInstance = fieldInfo.GetValue(parentInstance);
                 if (surrogateAttrCached.ForceInitialization)
                 {
-                    nestedInstance = TryForceInitializeInstance(fieldInfo.FieldType);
+                    nestedInstance = TryForceInitializeInstance(fieldInfo.GetUnderlyingType());
                     if(nestedInstance == null)
                     {
                         Debug.LogError("Cannot create DI instance of object.");
@@ -47,7 +52,7 @@
                 }
                     
                 ResolveDependencies(ref nestedInstance);
-                if (fieldInfo.FieldType.IsValueType)
+                if (fieldInfo.GetUnderlyingType().IsValueType)
                 {
                     fieldInfo.SetValue(parentInstance, nestedInstance);
                 }
@@ -55,8 +60,11 @@
         }
         private void ResolveDependencies(ref object instanceObject)
         {
-            var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in allInjectableFields)
+            List<MemberInfo> allInjectableMembers = new List<MemberInfo>();
+            allInjectableMembers.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Field, instanceObject, BindingFlags.Instance | BindingFlags.NonPublic));
+            allInjectableMembers.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Property, instanceObject, BindingFlags.Instance | BindingFlags.Public));
+            
+            foreach (var fieldInfo in allInjectableMembers)
             {
                 if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Inseminate)))
                 {
@@ -64,7 +72,7 @@
                 }
                 inseminateAttrCached = fieldInfo.GetCustomAttribute<InseminatorAttributes.Inseminate>( false);
 
-                var instance = ResolveSingleDependency(fieldInfo.FieldType, inseminateAttrCached.InstanceId);
+                var instance = ResolveSingleDependency(fieldInfo.GetUnderlyingType(), inseminateAttrCached.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);
             }
             ResolveNested(ref instanceObject);

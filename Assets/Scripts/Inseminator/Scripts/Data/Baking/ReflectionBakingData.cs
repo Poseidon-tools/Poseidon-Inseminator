@@ -2,18 +2,21 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
 
     [Serializable]
     public sealed class InseminateFieldBakingData
     {
-        public string FieldName;
+        public string MemberName;
+        public MemberTypes MemberType;
         public InseminatorAttributes.Inseminate Attribute;
     }
     
     [Serializable]
     public sealed class SurrogateFieldBakingData
     {
-        public string FieldName;
+        public string MemberName;
+        public MemberTypes MemberType;
         public InseminatorAttributes.Surrogate Attribute;
     }
     

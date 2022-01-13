@@ -9,6 +9,7 @@
         #region Public API
         public List<MemberInfo> GetMembers(MemberTypes memberType, object instance, BindingFlags bindingFlags)
         {
+            if (instance == null) return new List<MemberInfo>();
             switch (memberType)
             {
                 case MemberTypes.Property:
@@ -17,8 +18,23 @@
                     return instance.GetType().GetFields(bindingFlags).Select(p => (MemberInfo)p).ToList();
             }
 
-            return null;
+            return new List<MemberInfo>();;
+        }
+
+        public MemberInfo GetMember(MemberTypes memberType, string name, object sourceObject, BindingFlags bindingFlags)
+        {
+            switch (memberType)
+            {
+                case MemberTypes.Field:
+                    return sourceObject.GetType().GetField(name, bindingFlags);
+                case MemberTypes.Property:
+                    return sourceObject.GetType().GetProperty(name, bindingFlags);
+                default:
+                    return null;
+            }
         }
         #endregion
+
+        
     }
 }

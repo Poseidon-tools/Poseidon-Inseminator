@@ -3,6 +3,7 @@
     using System;
     using System.Reflection;
     using Data.Baking;
+    using Resolver.Helpers;
     using UnityEngine;
 
     public class StandardBakingModule  : InseminatorBakingModule
@@ -14,47 +15,50 @@
         
         private void GetFieldsForInseminate(ref object instanceObject, ReflectionBakingData bakingData)
         {
-            var allInjectableFields = instanceObject.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in allInjectableFields)
+            var allInjectableMembers = memberInfoExtractor.GetMembers(MemberTypes.Field, instanceObject,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            allInjectableMembers.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Property, instanceObject, BindingFlags.Instance | BindingFlags.Public));
+            
+            foreach (var memberInfo in allInjectableMembers)
             {
-                if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Inseminate)))
+                if (!memberInfo.IsDefined(typeof(InseminatorAttributes.Inseminate)))
                 {
                     continue;
                 }
-                var inseminateAttr = fieldInfo.GetCustomAttribute<InseminatorAttributes.Inseminate>( false);
-                ReflectionBaker.UpdateBakingDataWithField(bakingData, instanceObject, fieldInfo, inseminateAttr);
+                var inseminateAttr = memberInfo.GetCustomAttribute<InseminatorAttributes.Inseminate>( false);
+                ReflectionBaker.UpdateBakingDataWithField(bakingData, instanceObject, memberInfo, inseminateAttr);
             }
             HandleSurrogates(ref instanceObject, bakingData);
         }
         
         private void HandleSurrogates(ref object parentInstance, ReflectionBakingData bakingData)
         {
-            var fields = parentInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-            foreach (var fieldInfo in fields)
+            var allMembers = memberInfoExtractor.GetMembers(MemberTypes.Field, parentInstance,
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            allMembers.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Property, parentInstance, BindingFlags.Instance | BindingFlags.Public));
+            foreach (var memberInfo in allMembers)
             {
-                if (!fieldInfo.IsDefined(typeof(InseminatorAttributes.Surrogate)))
+                if (!memberInfo.IsDefined(typeof(InseminatorAttributes.Surrogate)))
                 {
                     continue;
                 }
-                var surrogateAttr = fieldInfo.GetCustomAttribute<InseminatorAttributes.Surrogate>(false);
+                var surrogateAttr = memberInfo.GetCustomAttribute<InseminatorAttributes.Surrogate>(false);
                 if (surrogateAttr == null)
                 {
                     continue;
                 }
 
-                ReflectionBaker.UpdateBakingDataWithSurrogate(bakingData, parentInstance, fieldInfo, surrogateAttr);
-                
-                var nestedInstance = fieldInfo.GetValue(parentInstance);
+                ReflectionBaker.UpdateBakingDataWithSurrogate(bakingData, parentInstance, memberInfo, surrogateAttr);
                 
                 if (surrogateAttr.ForceInitialization)
                 {
-                    nestedInstance = Activator.CreateInstance(fieldInfo.FieldType);
+                    nestedInstance = Activator.CreateInstance(memberInfo.GetUnderlyingType());
                     if(nestedInstance == null)
                     {
                         Debug.LogError("Cannot create DI instance of object.");
                         continue;
                     }
-                    fieldInfo.SetValue(parentInstance, nestedInstance);
+                    memberInfo.SetValue(parentInstance, nestedInstance);
                 }
                 
                 GetFieldsForInseminate(ref nestedInstance, bakingData);

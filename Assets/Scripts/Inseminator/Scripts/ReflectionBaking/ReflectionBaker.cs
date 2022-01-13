@@ -121,12 +121,12 @@
         #endregion
 
         #region Baking Data Helpers
-        public static void UpdateBakingDataWithField(ReflectionBakingData bakingData, object instanceObject, FieldInfo fieldInfo, InseminatorAttributes.Inseminate inseminateAttr = null)
+        public static void UpdateBakingDataWithField(ReflectionBakingData bakingData, object instanceObject, MemberInfo memberInfo, InseminatorAttributes.Inseminate inseminateAttr = null)
         {
             if (bakingData.BakedInjectableFields.TryGetValue(instanceObject.GetType(), out var fieldBakingDatas))
             {
                 var existingField = fieldBakingDatas.Find(f =>
-                    string.Compare(f.FieldName, fieldInfo.Name, StringComparison.Ordinal) == 0); 
+                    string.Compare(f.MemberName, memberInfo.Name, StringComparison.Ordinal) == 0); 
                 if (existingField != null)
                 {
                     return;
@@ -134,7 +134,8 @@
                 fieldBakingDatas.Add(new InseminateFieldBakingData()
                 {
                     Attribute =  inseminateAttr,
-                    FieldName = fieldInfo.Name
+                    MemberName = memberInfo.Name,
+                    MemberType = memberInfo.MemberType
                 });
                 return;
             }
@@ -143,16 +144,17 @@
                 new InseminateFieldBakingData
                 {
                     Attribute =  inseminateAttr,
-                    FieldName = fieldInfo.Name
+                    MemberName = memberInfo.Name,
+                    MemberType =  memberInfo.MemberType
                 }
             });
         }
-        public static  void UpdateBakingDataWithSurrogate(ReflectionBakingData bakingData, object instanceObject, FieldInfo fieldInfo, InseminatorAttributes.Surrogate surrogateAttr = null)
+        public static  void UpdateBakingDataWithSurrogate(ReflectionBakingData bakingData, object instanceObject, MemberInfo memberInfo, InseminatorAttributes.Surrogate surrogateAttr = null)
         {
             if (bakingData.BakedSurrogateFields.TryGetValue(instanceObject.GetType(), out var fieldBakingDatas))
             {
                 var existingField = fieldBakingDatas.Find(f =>
-                    string.Compare(f.FieldName, fieldInfo.Name, StringComparison.Ordinal) == 0); 
+                    string.Compare(f.MemberName, memberInfo.Name, StringComparison.Ordinal) == 0); 
                 if (existingField != null)
                 {
                     return;
@@ -160,7 +162,8 @@
                 fieldBakingDatas.Add(new SurrogateFieldBakingData()
                 {
                     Attribute =  surrogateAttr,
-                    FieldName = fieldInfo.Name
+                    MemberName = memberInfo.Name,
+                    MemberType = memberInfo.MemberType
                 });
                 return;
             }
@@ -169,7 +172,8 @@
                 new SurrogateFieldBakingData
                 {
                     Attribute =  surrogateAttr,
-                    FieldName = fieldInfo.Name
+                    MemberName = memberInfo.Name,
+                    MemberType = memberInfo.MemberType
                 }
             });
         }

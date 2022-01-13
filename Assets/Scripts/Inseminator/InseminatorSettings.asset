@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296f0e4e824a4b65b74edc2ec7778c0a, type: 3}
   m_Name: InseminatorSettings
   m_EditorClassIdentifier: 
-  <AutoBakeOnBuild>k__BackingField: 0
-  <BakeablePrefabsPath>k__BackingField: 
+  <AutoBakeOnBuild>k__BackingField: 1
+  <BakeablePrefabsPaths>k__BackingField: []
