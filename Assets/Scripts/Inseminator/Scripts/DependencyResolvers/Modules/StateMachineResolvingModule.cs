@@ -1,8 +1,7 @@
-﻿namespace SDI.CustomResolvers.Modules
+﻿namespace Inseminator.Scripts.DependencyResolvers.Modules
 {
-    using CubbyCustomResolvers.Modules;
-    using Inseminator.Scripts.Resolver;
-    using Inseminator.Scripts.Resolver.ResolvingModules;
+    using Resolver;
+    using Resolver.ResolvingModules;
 
     public class StateMachineResolvingModule : ResolvingModule
     {

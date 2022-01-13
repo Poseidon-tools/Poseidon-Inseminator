@@ -1,9 +1,8 @@
-﻿namespace SDI.CustomResolvers.Modules
+﻿namespace Inseminator.Scripts.DependencyResolvers.Modules
 {
-    using CubbyCustomResolvers.Modules;
-    using Inseminator.Scripts.ReflectionBaking;
-    using Inseminator.Scripts.Resolver;
-    using Inseminator.Scripts.Resolver.ResolvingModules;
+    using ReflectionBaking;
+    using Resolver;
+    using Resolver.ResolvingModules;
 
     public class BakedStateMachineResolvingModule : ResolvingModule
     {

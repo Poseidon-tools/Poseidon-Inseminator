@@ -1,8 +1,8 @@
-﻿namespace SDI.CubbyCustomResolvers.Modules
+﻿namespace Inseminator.Scripts.DependencyResolvers.Modules
 {
     using System;
     using System.Reflection;
-    using Inseminator.Scripts.Data.Baking;
+    using Data.Baking;
     using Poseidon.StateMachine;
     using UnityEngine;
 
