@@ -5,18 +5,19 @@ Inseminator is a **dependency injection** framework built specifically to target
 ## Status
 #### Addon status: in development
 Must-have todo list:
-* ~~resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)~~ -> **reflection baking**
-* property injection
-* support injection to GameObject resolvers from scene resolver if needed
+* ~~resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)~~ -> **reflection baking** ✅
+* property injection ⏳
+* support injection to GameObject resolvers from scene resolver if needed ⏳
 
 # Compatibility
 
 Tested in Unity 3D on the following platforms:
 
- - Standalone PC
- - Android (Mono + .Net Standard 2.0)
- - WebGL
-
+ - Standalone PC ✅
+ - Android (Mono + .Net Standard 2.0) ✅
+ - WebGL ✅
+ - iOS ⏳
+ 
 ## Purpose
 
 In contrast to other Unity DI-frameworks available, we chosen Inseminator to have simple duty. The main and only purpose of Inseminator is to **serve dependencies for given scope**. No other functionalities, no messaging, no pub-sub systems hidden inside.
@@ -96,7 +97,7 @@ public class MonoInjectable : MonoBehaviour
 ```
 As a result you'll see message logged in console, and suprisingly no NullReferenceException error, although at first glance it seems that viewManager can't have value, because it's nor exposed in inspector or initialized via any method.
 
-Using `[Insemine]` attribute is only a top of an iceberg, but it's required to tell Inseminator system that you have field in your component, waiting for value to be injected. Next step is dependency resolvers setup.
+Using `[Inseminate]` attribute is only a top of an iceberg, but it's required to tell Inseminator system that you have field in your component, waiting for value to be injected. Next step is dependency resolvers setup.
 
 ### Dependency resolvers
 Basically dependency resolver is a container, which will deal with installing and assigning dependencies. **Each dependency resolver is considered as separate scope** (working on scope parenting at this moment). For now, you cannot establish communication between subscope and main scope. It means that each of your dependency resolvers should be self-sufficient and should be able to serve dependencies in it's scope on it's own. This will become more understandable after default resolvers introduction part.
@@ -326,3 +327,39 @@ After calling `Create` method (If there is no errors etc), your object is ready 
 
 #### Custom factories
 You can create your own factory that will do more complex work for you. It's quite simple, because it works just as standard installed dependency, except factory have to have dependency resolver injected to be able to call resolving proces for freshly instantiated object. If you'll need to implement factory on your own, look at `InseminatorMonoFactory` class for reference.
+
+
+### Advanced
+#### Self sufficient objects
+The rare, but still possible case is that you want to dynamic instantiate an object, which won't use scene scope in order to get references itself(or for any of it's child objects). It's called self-sufficient object and can be done in quite simply way.
+
+Your prefab should have GameObjectDependencyResolver component, with declared installers and modules and voila - self-sufficient object is set up. You can declare your own dependencies inside this scope and main-scene scope won't touch this prefab after instantiating. But remember, that self-sufficient objects also have to be created via factory.
+
+#### State Machine Resolving
+How to properly setup state machine to work with Inseminator? For injecting purposes, it's extremely important to have state machine initialized in field declaration, just like that:
+```C#
+private StateMachine<ApplicationState> appStateManager = new StateMachine<ApplicationState>(  
+  new State<ApplicationState>[]  
+ {
+	new AppIntroState(),  
+	new ApplicationExampleState(),  
+	new ApplicationOutroState()  
+ });
+```
+It's important because state machine resolving module is expecting to retrieve states inside state machine, so the state machine initialization with states declaration should be done immediately along with field declaration. Without declared states, resolving module cannot resolve anything, simply because state machine States[] array is empty.
+
+State machine resolving itself works just like standard resolving approach -> all you need to do is to add preferred state machine resolving module to your Dependency Resolver. It could be StateMachineResolvingModule or BakedStateMachineResolvingModule.
+
+##### Dynamic state machines ❌
+Just for keep things clear - **it's not possible to dynamically create state machine and get dependencies injected into states**, like that:
+```C#
+private void OnEnable()  
+{  
+	appStateManager = new StateMachine<ApplicationState>(new State<ApplicationState>[]  
+	{
+		new AppIntroState()  
+	});
+	 appStateManager.Run();  
+}
+```
+**This functionality is not supported.**
