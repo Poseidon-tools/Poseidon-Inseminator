@@ -34,7 +34,6 @@
                 {
                     continue;
                 }
-                
                 var nestedInstance = fieldInfo.GetValue(parentInstance);
                 if (surrogateAttrCached.ForceInitialization)
                 {
