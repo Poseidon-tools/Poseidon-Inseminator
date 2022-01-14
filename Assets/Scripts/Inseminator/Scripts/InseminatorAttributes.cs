@@ -12,5 +12,10 @@
         {
             public bool ForceInitialization = false;
         }
+
+        public class InseminateMethod : Attribute
+        {
+            public object[] ParamIds = new object[]{};
+        }
     }
 }

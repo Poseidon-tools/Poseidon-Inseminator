@@ -8,12 +8,14 @@
     {
         #region Inspector
         [SerializeField] private MessageData sampleMessage;
+        [SerializeField] private MessageData secondaryMessage;
         #endregion
         
         #region Public Methods
         public override void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)
         {
-            inseminatorDependencyResolver.Bind<MessageData>(sampleMessage);
+            inseminatorDependencyResolver.Bind<MessageData>(sampleMessage, "SampleMessage");
+            inseminatorDependencyResolver.Bind<MessageData>(secondaryMessage, "SecondaryMessage");
         }
         #endregion
     }

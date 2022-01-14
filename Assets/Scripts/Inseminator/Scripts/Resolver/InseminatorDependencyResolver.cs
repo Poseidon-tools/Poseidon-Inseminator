@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Data;
     using Installers;
     using ResolvingModules;
@@ -53,6 +54,24 @@
                 ObjectInstance = objectInstance
             });
         }
+        
+        public object GetValueForType(Type targetType, object instanceId = null)
+        {
+            if (!registeredDependencies.TryGetValue(targetType, out var dependency))
+            {
+                Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}");
+                return default;
+            }
+            if (instanceId == null)
+            {
+                return dependency[0].ObjectInstance;
+            }
+
+            var matchingInstance = dependency.FirstOrDefault(instance => instance.Id.Equals(instanceId));
+            return matchingInstance?.ObjectInstance;
+        }
+        #endregion
+
 
         #region Lifecycle
         public virtual void OnBeforeInstall(){ }
@@ -61,7 +80,6 @@
         public virtual void OnAfterGetObjects(){ }
         #endregion
         
-        #endregion
         
         #region Resolving Core
         protected abstract void GetTargetObjects();

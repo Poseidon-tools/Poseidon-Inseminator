@@ -15,9 +15,11 @@
         private InseminatorAttributes.Surrogate surrogateAttrCached;
 
         private MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
+        private MethodsExtractor methodsExtractor;
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
         {
+            methodsExtractor = new MethodsExtractor(dependencyResolver);
             registeredDependencies = dependencyResolver.RegisteredDependencies;
             ResolveDependencies(ref sourceObject);
         }
@@ -75,6 +77,9 @@
                 var instance = ResolveSingleDependency(fieldInfo.GetUnderlyingType(), inseminateAttrCached.InstanceId);
                 fieldInfo.SetValue(instanceObject, instance);
             }
+            
+            methodsExtractor.ResolveMethods(instanceObject);
+            
             ResolveNested(ref instanceObject);
         }
 
