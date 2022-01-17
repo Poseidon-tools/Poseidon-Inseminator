@@ -131,8 +131,7 @@
                     resolvedParameters.Add(paramValue);
                     paramIndex++;
                 }
-                Debug.Log($"Run method | {dependencyResolver.name}");
-                MethodsExtractor.RunMethod(sourceObject, bakedMethod.MemberName, resolvedParameters);
+                MethodsHelper.RunMethod(sourceObject, bakedMethod.MemberName, resolvedParameters);
             }
         }
         #endregion

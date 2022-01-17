@@ -6,7 +6,7 @@
     using Unity.VisualScripting;
     using UnityEngine;
 
-    public static class MethodsExtractor
+    public static class MethodsHelper
     {
         #region Private Variables
         private static InseminatorDependencyResolver dependencyResolver;

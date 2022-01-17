@@ -34,7 +34,7 @@
 
         private void BakeMethods(object sourceObject, ReflectionBakingData bakingData)
         {
-            foreach (var bakedMethodTuple in MethodsExtractor.GetInseminationMethods(sourceObject))
+            foreach (var bakedMethodTuple in MethodsHelper.GetInseminationMethods(sourceObject))
             {
                 ReflectionBaker.UpdateBakingDataWithMethod(bakingData, sourceObject, bakedMethodTuple.Item1, bakedMethodTuple.Item2);
             }

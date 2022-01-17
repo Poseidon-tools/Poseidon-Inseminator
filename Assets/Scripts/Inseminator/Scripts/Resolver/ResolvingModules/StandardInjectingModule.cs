@@ -78,7 +78,7 @@
                 fieldInfo.SetValue(instanceObject, instance);
             }
             
-            MethodsExtractor.ResolveMethods(instanceObject, dependencyResolver);
+            MethodsHelper.ResolveMethods(instanceObject, dependencyResolver);
             
             ResolveNested(ref instanceObject);
         }
