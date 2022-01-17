@@ -1,6 +1,7 @@
 ﻿namespace Inseminator.Scripts.Resolver.ResolvingModules
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using Data.Baking;
@@ -46,6 +47,7 @@
                 var instance = ResolveSingleDependency(memberInfo.GetUnderlyingType(), fieldBakingData.Attribute?.InstanceId);
                 memberInfo.SetValue(sourceObject, instance);
             }
+            ResolveAndRunBakedMethods(sourceObject);
 
             ResolveNested(ref sourceObject);
         }
@@ -106,6 +108,32 @@
 
             var matchingInstance = dependency.FirstOrDefault(instance => instance.Id.Equals(instanceId));
             return matchingInstance?.ObjectInstance;
+        }
+
+        private void ResolveAndRunBakedMethods(object sourceObject)
+        {
+            var targetType = sourceObject.GetType();
+            List<object> resolvedParameters = new List<object>();
+            if (!bakingData.BakedMethods.TryGetValue(targetType, 
+                out var bakedMethods)) return;
+            foreach (var bakedMethod in bakedMethods)
+            {
+                resolvedParameters.Clear();
+                int paramIndex = 0;
+                foreach (var paramValue in bakedMethod.ParameterTypes.Select(parameterType 
+                    => ResolveSingleDependency(parameterType, bakedMethod.Attribute.ParamIds[paramIndex])))
+                {
+                    if (paramValue == null)
+                    {
+                        paramIndex++;
+                        continue;
+                    }
+                    resolvedParameters.Add(paramValue);
+                    paramIndex++;
+                }
+                Debug.Log($"Run method | {dependencyResolver.name}");
+                MethodsExtractor.RunMethod(sourceObject, bakedMethod.MemberName, resolvedParameters);
+            }
         }
         #endregion
     }

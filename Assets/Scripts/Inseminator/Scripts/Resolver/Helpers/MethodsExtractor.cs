@@ -18,6 +18,24 @@
             ResolveAndRun(FilterMethodsByAttribute(GetMethods(sourceObject)), sourceObject);
         }
 
+        public static void RunMethod(object methodOwner, string methodName, List<object> methodParameters)
+        {
+            var methodInfo = methodOwner.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (methodInfo == null)
+            {
+                Debug.LogError($"No such method {methodName} inside {methodOwner.GetType().Name} object.");
+                return;
+            }
+
+            if (methodInfo.GetParameters().Length != methodParameters.Count)
+            {
+                Debug.LogError($"Expected {methodInfo.GetParameters().Length} params, received {methodParameters.Count}");
+                return;
+            }
+
+            methodInfo.Invoke(methodOwner, methodParameters.ToArray());
+        }
+
         public static List<(MethodInfo, InseminatorAttributes.InseminateMethod)> GetInseminationMethods(object sourceObject)
         {
             var filteredMethods = FilterMethodsByAttribute(GetMethods(sourceObject));
@@ -29,6 +47,7 @@
 
             return resultList;
         }
+
         #endregion
 
         #region Private Methods
@@ -48,37 +67,46 @@
             foreach (var methodInfo in filteredMethods)
             {
                 var attr = methodInfo.GetCustomAttribute<InseminatorAttributes.InseminateMethod>();
-                if (attr == null)
-                {
-                    continue;
-                }
-
-                var methodParams = methodInfo.GetParameters();
-                if (methodParams.Length == 0)
-                {
-                    continue;
-                }
-                List<object> paramInjectingValues = new List<object>();
-                int paramIndex = 0;
-                foreach (var parameterInfo in methodParams)
-                {
-                    var paramValue = dependencyResolver.GetValueForType(parameterInfo.ParameterType, attr.ParamIds[paramIndex]);
-                    if (paramValue == null)
-
-                    {
-                        paramIndex++;
-                        continue;
-                    }
-                    paramInjectingValues.Add(paramValue);
-                    paramIndex++;
-                }
-
-                if (methodParams.Length != paramInjectingValues.Count)
+                var paramCount = methodInfo.GetParameters().Length;
+                var paramValues = ResolveMethodParamDependencies(methodInfo, attr, dependencyResolver);
+               
+                if (paramCount != paramValues.Count)
                 {
                     return;
                 }
-                methodInfo.Invoke(methodOwner, paramInjectingValues.ToArray());
+                methodInfo.Invoke(methodOwner, paramValues.ToArray());
             }
+        }
+
+        private static List<object> ResolveMethodParamDependencies(MethodInfo methodInfo, InseminatorAttributes.InseminateMethod attr, InseminatorDependencyResolver dependencyResolver)
+        {
+            var paramInjectingValues = new List<object>();
+            if (attr == null)
+            {
+                return paramInjectingValues;
+            }
+
+            var methodParams = methodInfo.GetParameters();
+            if (methodParams.Length == 0)
+            {
+                return paramInjectingValues;
+            }
+            
+            int paramIndex = 0;
+            foreach (var parameterInfo in methodParams)
+            {
+                var paramValue = dependencyResolver.GetValueForType(parameterInfo.ParameterType, attr.ParamIds[paramIndex]);
+                if (paramValue == null)
+
+                {
+                    paramIndex++;
+                    continue;
+                }
+                paramInjectingValues.Add(paramValue);
+                paramIndex++;
+            }
+
+            return paramInjectingValues;
         }
         #endregion
     }

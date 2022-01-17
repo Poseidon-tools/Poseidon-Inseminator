@@ -20,9 +20,9 @@
         {
             var sceneObjects = InseminatorHelpers.GetSceneObjectsExceptTypes(new List<Type>()
             {
-                
             }, gameObject.scene);
-            sceneComponents = InseminatorHelpers.GetComponentsExceptTypes(sceneObjects, new List<Type>()
+            var filteredObjects = FilterSceneObjectsByParent(sceneObjects);
+            sceneComponents = InseminatorHelpers.GetComponentsExceptTypes(filteredObjects, new List<Type>()
             {
                 typeof(InseminatorDependencyResolver), 
                 typeof(InseminatorInstaller)
@@ -33,6 +33,42 @@
                 var instance = (object)sceneComponent;
                 ResolveDependencies(ref instance);
             }
+        }
+        #endregion
+
+        #region Helpers
+        protected List<GameObject> FilterSceneObjectsByParent(List<GameObject> sourceList)
+        {
+            var result = new List<GameObject>();
+            foreach (var sceneObject in sourceList)
+            {
+                var currentParent = sceneObject.transform.parent;
+                if (currentParent == null)
+                {
+                    result.Add(sceneObject);
+                    continue;
+                }
+                while (currentParent != null)
+                {
+                    var scopedDependencyResolver = currentParent.GetComponent<InseminatorDependencyResolver>();
+                    if (scopedDependencyResolver != null)
+                    {
+                        if (gameObject == scopedDependencyResolver.gameObject)
+                        {
+                            result.Add(sceneObject);
+                        }
+
+                        break;
+                    }
+                    currentParent = currentParent.parent;
+                    if (currentParent == null)
+                    {
+                        result.Add(sceneObject);
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
         
