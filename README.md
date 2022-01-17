@@ -6,7 +6,8 @@ Inseminator is a **dependency injection** framework built specifically to target
 #### Addon status: in development
 Must-have todo list:
 * ~~resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)~~ -> **reflection baking** ✅
-* property injection ⏳
+* property injection ✅
+* method injection (bonus stuff) ✅
 * support injection to GameObject resolvers from scene resolver if needed ⏳
 
 # Compatibility
@@ -33,7 +34,7 @@ Related post: https://answers.unity.com/questions/1455259/how-to-fix-the-excepti
 ## Main features
 
 So, what our DI-system is able to?
-* **field injection** (and property injection in future) at scene init (based on execution order) on any gameobject on scene, in any of your components -> see **Documentation/Injection**
+* **field injection and property injection**  at scene init (based on execution order) on any gameobject on scene, in any of your components -> see **Documentation/Injection**
 * **injection in nested objects**, even if the object itself is not injected (even could be uninitialized and our system will try to force initialize it, if you'll allow for this in attribute) -> see **Documentation/Surrogates**
 * **custom resolving modules support** - by default Inseminator comes with reflection-based injection module, which will handle injecting and surrogates for you. But you can implement your own module for more complex tasks - like we did by implementing custom module for resolving state machines, states inside and states dependencies(including nested state machines etc). See **Documentation/ResolvingModules**
 * resolving for **3 main scopes - Scene, GameObject and ScriptableObject**. You can install your dependencies for scene objects (it's a main container for whole scene), you can use GameObjectDependencyResolver to separate your game object from scene dependencies and make it self-sufficient, using other set of installers/objects. Finally, you can use ScriptableObjectDependencyResolver to inject things in scriptable objects. To be honest, we don't think it will be useful, but it's ready to go.
@@ -48,6 +49,7 @@ Table of content:
 	* Resolving Modules
 * Reflection baking
 * Surrogates
+* Method Injection via Inseminator
 * Injecting into instantiated object
 	* Factories
 * Advanced stuff
@@ -83,6 +85,11 @@ Injecting values into MonoBehaviours is pretty simple, and require you to use sp
 ```C#
 public class MonoInjectable : MonoBehaviour  
 {  
+	#region Properties
+	// property injection
+	[field: SerializeField, InseminatorAttributes.Inseminate, PreviewField]
+        public MessageData SceneScopeMessageData { get; private set; }
+	#endregion
 	#region Private Variables  
 	[InseminatorAttributes.Inseminate] private ViewManager viewManager;  
 	[InseminatorAttributes.Inseminate] private InseminatorMonoFactory monoFactory;  
@@ -269,6 +276,42 @@ public class TestNestedModuleInjection
 ```
 The field `[InseminatorAttributes.Surrogate(ForceInitialization = true)] private NestedInNested nestedUninitialized;` is not initialized anywhere, and expected result of calling `nestedUninitialized.Alert()` method could be **NullReferenceException**. But, thanks to `ForceInitialize` param, the field **will be initialized during dependency resolving process** and it's structure also will be resolved.
 
+	
+### Method Injection via Inseminator
+
+It's possible to inject value into the field and property, but what about using injection method?
+Let's assume, that after injection you want to use the values immediately, just after injection process has given you the dependencies. Using standard field/property injection is not the way, but you can use dedicated feature called method injection.
+First, example:
+```C#
+// define the attribute of method
+[InseminatorAttributes.InseminateMethod(ParamIds = new object[]  
+ {"SampleMessage", "SecondaryMessage"})]  
+ // specify method declaration
+private void TestMethodInjection(MessageData messageData, MessageData secondaryMessage)  
+{  
+  // cache injected values and use them
+  this.secondaryMessage = secondaryMessage;  
+  this.messageData = messageData;
+  Debug.Log("Method injection messages:");  
+  Debug.Log($"Sample: {messageData.Message}");  
+  Debug.Log($"Secondary: {secondaryMessage.Message}");  
+}
+```
+To properly make use of method injection, you have to notice few things:
+* method cannot be static
+* you have to define method parameters, method without params won't be properly invoked
+* you have to attach special attribute
+* if you want your injecting params to be resolved from specifed instance, you have to fill ParamIds array in attribute
+
+The attribute to use with method injection is `InseminateMethod` attribute.
+
+#### Tricky case
+What if you have three params, but you only want 1st and 3rd param to have id? It's quite simple - you have to specify ParamIds array like that:
+```C#
+[InseminatorAttributes.InseminateMethod(ParamIds = new object[]  
+ {"SampleMessage", string.Empty, "SecondaryMessage"})]
+```
+So the first param will be waiting for instance with "SampleMessage" id, second param will wait for the main instance of an object(without id specified or first of all instances with id, if non-id instance is not defined), and third param will be waiting for instance with "SecondaryMessage" id.
 
 ### Injecting into instantiated object
 As described previously, the main part of DI-process is performed at the scene startup. Scene objects are resolved and flow is going on. But the tricky part is when you want to instantiate new object on scene, and it's containing custom components requiring dependency resolving. 
