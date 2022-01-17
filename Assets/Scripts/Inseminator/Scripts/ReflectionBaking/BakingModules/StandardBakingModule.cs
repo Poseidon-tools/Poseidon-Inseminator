@@ -10,10 +10,10 @@
     {
         public override void Run(ref object sourceObject, ReflectionBakingData bakingData, ReflectionBaker reflectionBaker)
         {
-            GetFieldsForInseminate(ref sourceObject, bakingData);
+            GetMembersForBaking(ref sourceObject, bakingData);
         }
         
-        private void GetFieldsForInseminate(ref object instanceObject, ReflectionBakingData bakingData)
+        private void GetMembersForBaking(ref object instanceObject, ReflectionBakingData bakingData)
         {
             var allInjectableMembers = memberInfoExtractor.GetMembers(MemberTypes.Field, instanceObject,
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -28,7 +28,16 @@
                 var inseminateAttr = memberInfo.GetCustomAttribute<InseminatorAttributes.Inseminate>( false);
                 ReflectionBaker.UpdateBakingDataWithField(bakingData, instanceObject, memberInfo, inseminateAttr);
             }
+            BakeMethods(instanceObject, bakingData);
             HandleSurrogates(ref instanceObject, bakingData);
+        }
+
+        private void BakeMethods(object sourceObject, ReflectionBakingData bakingData)
+        {
+            foreach (var bakedMethodTuple in MethodsExtractor.GetInseminationMethods(sourceObject))
+            {
+                ReflectionBaker.UpdateBakingDataWithMethod(bakingData, sourceObject, bakedMethodTuple.Item1, bakedMethodTuple.Item2);
+            }
         }
         
         private void HandleSurrogates(ref object parentInstance, ReflectionBakingData bakingData)
@@ -62,7 +71,7 @@
                     memberInfo.SetValue(parentInstance, nestedInstance);
                 }
                 
-                GetFieldsForInseminate(ref nestedInstance, bakingData);
+                GetMembersForBaking(ref nestedInstance, bakingData);
             }
         }
     }

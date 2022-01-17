@@ -15,11 +15,11 @@
         private InseminatorAttributes.Surrogate surrogateAttrCached;
 
         private MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
-        private MethodsExtractor methodsExtractor;
+        private InseminatorDependencyResolver dependencyResolver;
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
         {
-            methodsExtractor = new MethodsExtractor(dependencyResolver);
+            this.dependencyResolver = dependencyResolver;
             registeredDependencies = dependencyResolver.RegisteredDependencies;
             ResolveDependencies(ref sourceObject);
         }
@@ -78,7 +78,7 @@
                 fieldInfo.SetValue(instanceObject, instance);
             }
             
-            methodsExtractor.ResolveMethods(instanceObject);
+            MethodsExtractor.ResolveMethods(instanceObject, dependencyResolver);
             
             ResolveNested(ref instanceObject);
         }

@@ -3,37 +3,47 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using Unity.VisualScripting;
     using UnityEngine;
 
-    public class MethodsExtractor
+    public static class MethodsExtractor
     {
         #region Private Variables
-        private readonly InseminatorDependencyResolver dependencyResolver;
+        private static InseminatorDependencyResolver dependencyResolver;
         #endregion
         #region Public API
-        public MethodsExtractor(InseminatorDependencyResolver dependencyResolver)
+        public static void ResolveMethods(object sourceObject, InseminatorDependencyResolver resolver)
         {
-            this.dependencyResolver = dependencyResolver;
-        }
-        public void ResolveMethods(object sourceObject)
-        {
+            dependencyResolver = resolver;
             ResolveAndRun(FilterMethodsByAttribute(GetMethods(sourceObject)), sourceObject);
+        }
+
+        public static List<(MethodInfo, InseminatorAttributes.InseminateMethod)> GetInseminationMethods(object sourceObject)
+        {
+            var filteredMethods = FilterMethodsByAttribute(GetMethods(sourceObject));
+            var resultList = new List<(MethodInfo, InseminatorAttributes.InseminateMethod)>();
+            foreach (var filteredMethod in filteredMethods)
+            {
+                resultList.Add((filteredMethod, filteredMethod.GetAttribute<InseminatorAttributes.InseminateMethod>()));
+            }
+
+            return resultList;
         }
         #endregion
 
         #region Private Methods
-        private MethodInfo[] GetMethods(object sourceObject)
+        private static MethodInfo[] GetMethods(object sourceObject)
         {
             return sourceObject.GetType()
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         }
 
-        private List<MethodInfo> FilterMethodsByAttribute(MethodInfo[] methodInfos)
+        private static List<MethodInfo> FilterMethodsByAttribute(MethodInfo[] methodInfos)
         {
             return methodInfos.Where(methodInfo => methodInfo.IsDefined(typeof(InseminatorAttributes.InseminateMethod))).ToList();
         }
 
-        private void ResolveAndRun(List<MethodInfo> filteredMethods, object methodOwner)
+        private static void ResolveAndRun(List<MethodInfo> filteredMethods, object methodOwner)
         {
             foreach (var methodInfo in filteredMethods)
             {

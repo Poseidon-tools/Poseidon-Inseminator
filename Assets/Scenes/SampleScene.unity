@@ -276,7 +276,7 @@ MonoBehaviour:
   declaredInstallers:
   - {fileID: 2073360830}
   resolvingModules:
-  - {fileID: 1680188604}
+  - {fileID: 9016202574927979968}
   - {fileID: 849015762}
 --- !u!4 &60492138
 Transform:
@@ -2376,6 +2376,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sampleMessage: {fileID: 11400000, guid: 3bf68bef3f7e0f94c90538697c4aeb83, type: 2}
+  secondaryMessage: {fileID: 11400000, guid: df608406564b3ac4cb73bc9584ac1a84, type: 2}
 --- !u!4 &2073360831
 Transform:
   m_ObjectHideFlags: 0

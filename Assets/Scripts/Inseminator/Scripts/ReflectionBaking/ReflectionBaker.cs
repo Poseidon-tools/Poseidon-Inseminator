@@ -177,6 +177,36 @@
                 }
             });
         }
+
+        public static void UpdateBakingDataWithMethod(ReflectionBakingData bakingData, object instanceObject, 
+            MemberInfo memberInfo, InseminatorAttributes.InseminateMethod methodAttr)
+        {
+            if (bakingData.BakedMethods.TryGetValue(instanceObject.GetType(), out var bakedMethodData))
+            {
+                var existingMethod = bakedMethodData.Find(f =>
+                    string.Compare(f.MemberName, memberInfo.Name, StringComparison.Ordinal) == 0); 
+                if (existingMethod != null)
+                {
+                    return;
+                }
+                bakedMethodData.Add(new InseminateMethodBakingData()
+                {
+                    Attribute =  methodAttr,
+                    MemberName = memberInfo.Name,
+                    ParameterTypes = (memberInfo as MethodInfo)?.GetParameters().Select(p => p.ParameterType).ToList(),
+                });
+                return;
+            }
+            bakingData.BakedMethods.Add(instanceObject.GetType(), new List<InseminateMethodBakingData>()
+            {
+                new InseminateMethodBakingData
+                {
+                    Attribute =  methodAttr,
+                    MemberName = memberInfo.Name,
+                    ParameterTypes = (memberInfo as MethodInfo)?.GetParameters().Select(p => p.ParameterType).ToList(),
+                }
+            });
+        }
         #endregion
 
         #region Scenes
