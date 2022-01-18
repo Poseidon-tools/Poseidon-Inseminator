@@ -15,6 +15,8 @@
         #region private variables
         // this one should come from game object context
         [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
+        
+        [InseminatorAttributes.Inseminate] private MessageData sceneMessage;
 
         private StateMachine<DynamicContextStateType> stateMachine = new StateMachine<DynamicContextStateType>(
             new State<DynamicContextStateType>[]
@@ -28,6 +30,7 @@
         private void OnEnable()
         {
             textLogger.LogMessage("Dynamic Game object context working.", statusRenderer);
+            Debug.Log($"Dynamic context injected scene message: {sceneMessage.Message}");
             stateMachine.Run();
         }
 

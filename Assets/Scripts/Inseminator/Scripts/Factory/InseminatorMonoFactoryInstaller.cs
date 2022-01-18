@@ -13,6 +13,7 @@
         #region Public Methods
         public override void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver)
         {
+            factory.AssignResolver(inseminatorDependencyResolver);
             inseminatorDependencyResolver.Bind<InseminatorMonoFactory>(factory);
         }
         #endregion

@@ -6,10 +6,11 @@
 
     public class InseminatorMonoFactory : MonoBehaviour
     {
-        #region Private Variables
-        [InseminatorAttributes.Inseminate] private InseminatorDependencyResolver sceneDependencyResolver;
+        #region Public Variables
+        public InseminatorDependencyResolver AssignedResolver { get; private set; }
         #endregion
         #region Public API
+        public void AssignResolver(InseminatorDependencyResolver resolver) => AssignedResolver = resolver;
         public virtual T Create<T>(T templateObject, Transform parent = null) where T : Component
         {
             templateObject.gameObject.SetActive(false);
@@ -20,12 +21,12 @@
             var gameObjectResolver = CheckForGameObjectContext(instanceGameObject);
             if (gameObjectResolver != null)
             {
-                gameObjectResolver.InitializeResolver();
+                gameObjectResolver.InitializeResolver(AssignedResolver);
                 objectInstance.gameObject.SetActive(true);
                 return objectInstance;
             }
             
-            sceneDependencyResolver.ResolveExternalGameObject(ref instanceGameObject);
+            AssignedResolver.ResolveExternalGameObject(ref instanceGameObject);
             
             templateObject.gameObject.SetActive(true);
             objectInstance.gameObject.SetActive(true);
