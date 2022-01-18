@@ -19,7 +19,7 @@
 
         private void ResolveTree(ResolverTreeNode node)
         {
-            node.Resolver.InitializeResolver();
+            node.Resolver.InitializeResolver(node.Parent?.Resolver);
             foreach (var childNode in node.ChildNodes)
             {
                 ResolveTree(childNode);

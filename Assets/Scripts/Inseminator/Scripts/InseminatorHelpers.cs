@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Resolver;
     using UnityEngine;
     using UnityEngine.SceneManagement;
 
@@ -53,6 +54,13 @@
                 components.AddRange(listItem.GetComponents<MonoBehaviour>().Where(c => !excludedTypes.Contains(c.GetType())).ToList());
             }
             return components;
+        }
+
+        public static object TryResolveInParentHierarchy<T>(InseminatorDependencyResolver resolver, 
+            string objectId = "")
+        {
+            var result = resolver.GetValueForType(typeof(T), objectId);
+            return result ?? TryResolveInParentHierarchy<T>( resolver.Parent, objectId);
         }
         #endregion
 

@@ -21,8 +21,12 @@
             inseminatorDependencyResolver.Bind<MessageData>(sampleMessage, "SampleMessage");
             inseminatorDependencyResolver.Bind<MessageData>(secondaryMessage, "SecondaryMessage");
             
-            Debug.Log($"Is VM injected: {sceneViewManager != null}");
+            sceneViewManager = ResolveInParent<ViewManager>(inseminatorDependencyResolver.Parent);
+            inseminatorDependencyResolver.Bind<ViewManager>(sceneViewManager);
+            
+            Debug.Log($"Is VM injected: {sceneViewManager != null}", sceneViewManager);
         }
         #endregion
+
     }
 }

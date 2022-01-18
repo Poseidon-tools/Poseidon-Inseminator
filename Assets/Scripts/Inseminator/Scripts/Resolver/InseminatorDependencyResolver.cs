@@ -12,6 +12,7 @@
     {
         #region Public Variables
         public Dictionary<Type, List<InstallerEntity>> RegisteredDependencies => registeredDependencies;
+        public InseminatorDependencyResolver Parent { get; private set; }
         #endregion
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
@@ -25,8 +26,9 @@
         #endregion
 
         #region Public API
-        public virtual void InitializeResolver()
+        public virtual void InitializeResolver(InseminatorDependencyResolver parent = null)
         {
+            Parent = parent;
             OnBeforeInstall();
             Install(declaredInstallers);
             OnAfterInstall();

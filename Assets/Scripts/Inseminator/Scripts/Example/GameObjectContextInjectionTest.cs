@@ -1,19 +1,20 @@
 ﻿namespace Inseminator.Scripts.Example
 {
+    using Core.ViewManager;
     using UnityEngine;
-    using Utils.ScenesHelper;
 
     public class GameObjectContextInjectionTest : MonoBehaviour
     {
         #region Private Variables
         [InseminatorAttributes.Inseminate] private MessageData messageData;
-
+        [InseminatorAttributes.Inseminate] private ViewManager sceneViewManager;
         private MessageData secondaryMessage;
         #endregion
         #region Unity Methods
         private void Start()
         {
-            Debug.Log($"Hey hey, it's {name} here! Injected message is: {messageData.name} | {messageData.Message}");
+            Debug.Log($"Hey hey, it's {name} here! Injected message is: {messageData.Message}.");
+            Debug.Log($"{name}: Scene View Manager: {sceneViewManager.name}", sceneViewManager);
         }
         #endregion
         #region Method Injection Test
