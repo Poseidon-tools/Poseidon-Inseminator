@@ -27,7 +27,12 @@
             return sceneObjectsFiltered;
         }
         
-        
+        public static List<GameObject> GetRootSceneObjects(Scene scene)
+        {
+            var rootObjects = new List<GameObject>();
+            scene.GetRootGameObjects(rootObjects);
+            return rootObjects;
+        }
         
         public static List<MonoBehaviour> GetAllComponents(List<GameObject> sourceObjectsList)
         {

@@ -8,7 +8,6 @@
 
     public class MonoInjectable : MonoBehaviour
     {
-        // example of property injection
         [field: SerializeField, InseminatorAttributes.Inseminate, PreviewField]
         public MessageData SceneScopeMessageData { get; private set; }
         
