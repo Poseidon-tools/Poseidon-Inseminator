@@ -328,6 +328,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6874245628953496101}
+  - {fileID: 272884261653142485}
   m_Father: {fileID: 1445444757290708557}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -417,6 +418,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b6a11b18616459e9b50d49473c1ba29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6386339998439707210
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 272884261653142485}
+  - component: {fileID: 8438059504149617922}
+  m_Layer: 0
+  m_Name: MonoFactoryInstaller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &272884261653142485
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6386339998439707210}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6052417648325653312}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8438059504149617922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6386339998439707210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe2f2b9979b4ea7828e6e6ccf6b2c44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7452711238630477010
 GameObject:
   m_ObjectHideFlags: 0
@@ -465,6 +509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusRenderer: {fileID: 1655966680130663086}
+  nestedObject: {fileID: 3969625377527547696, guid: 42554616e837b104d922090da1c95cff, type: 3}
 --- !u!114 &8352010711923614795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,6 +524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   declaredInstallers:
   - {fileID: 1206946261316521207}
+  - {fileID: 8438059504149617922}
   resolvingModules:
   - {fileID: 546598532536285622}
   - {fileID: 8457246186555125427}

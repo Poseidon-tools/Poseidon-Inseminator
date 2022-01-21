@@ -22,6 +22,7 @@
             inseminatorDependencyResolver.Bind<ViewManager>(sceneViewManager);
             
             inseminatorDependencyResolver.Bind<MessageData>(sampleMessage);
+            inseminatorDependencyResolver.Bind("007-ABCD", "AccessCode");
         }
         #endregion
     }

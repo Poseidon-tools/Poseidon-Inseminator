@@ -9,13 +9,13 @@
         #region Installer API
         [UsedImplicitly]
         public abstract void InstallBindings(InseminatorDependencyResolver inseminatorDependencyResolver);
-        protected T ResolveInParent<T>(InseminatorDependencyResolver parentResolver) where T : Object
+        protected T ResolveInParent<T>(InseminatorDependencyResolver parentResolver, string objectID = "")
         {
             var searchedObject =
-                (T)InseminatorHelpers.TryResolveInParentHierarchy<T>(parentResolver);
+                (T)InseminatorHelpers.TryResolveInParentHierarchy<T>(parentResolver, objectID);
             if (searchedObject != null) return searchedObject;
             Debug.LogError("Can't find matching ViewManager in any of parent resolvers");
-            return null;
+            return default;
         }
         #endregion
     }

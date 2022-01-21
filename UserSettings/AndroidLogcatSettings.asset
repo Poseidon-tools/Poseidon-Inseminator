@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "967d5a69",
         "name": "com.com.muciojad.inseminator.simpleDI",
-        "processId": 20278,
+        "processId": 26145,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -19,6 +19,12 @@
             "name": "com.com.muciojad.inseminator.simpleDI",
             "processId": 20278,
             "exited": false
+        },
+        {
+            "deviceId": "967d5a69",
+            "name": "com.com.muciojad.inseminator.simpleDI",
+            "processId": 26145,
+            "exited": false
         }
     ],
     "m_Tags": {
@@ -29,7 +35,7 @@
             },
             {
                 "m_Name": "No Filter",
-                "m_Selected": true
+                "m_Selected": false
             },
             {
                 "m_Name": "",
@@ -45,7 +51,7 @@
             },
             {
                 "m_Name": "Unity",
-                "m_Selected": false
+                "m_Selected": true
             },
             {
                 "m_Name": "CRASH",

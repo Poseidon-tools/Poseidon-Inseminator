@@ -4,7 +4,7 @@
     using Resolver;
     using UnityEngine;
 
-    public class InseminatorMonoFactory : MonoBehaviour
+    public class InseminatorMonoFactory
     {
         #region Public Variables
         public InseminatorDependencyResolver AssignedResolver { get; private set; }
@@ -15,7 +15,7 @@
         {
             templateObject.gameObject.SetActive(false);
             
-            var objectInstance = Instantiate(templateObject, parent);
+            var objectInstance = Object.Instantiate(templateObject, parent);
             var instanceGameObject = objectInstance.gameObject;
 
             var gameObjectResolver = CheckForGameObjectContext(instanceGameObject);
