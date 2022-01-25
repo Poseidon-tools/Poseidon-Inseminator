@@ -1,4 +1,4 @@
-﻿namespace SDI.DynamicContext.StateMachine
+﻿namespace InseminatorExamples.DynamicContext.StateMachine
 {
     public enum DynamicContextStateType
     {

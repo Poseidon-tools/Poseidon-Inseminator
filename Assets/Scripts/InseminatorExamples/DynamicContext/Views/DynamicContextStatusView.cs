@@ -1,4 +1,4 @@
-﻿namespace SDI.DynamicContext.Views
+﻿namespace InseminatorExamples.DynamicContext.Views
 {
     using Core.ViewManager;
     using TMPro;

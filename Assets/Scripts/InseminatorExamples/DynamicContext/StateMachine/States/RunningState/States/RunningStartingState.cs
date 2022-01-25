@@ -1,7 +1,6 @@
-﻿namespace SDI.DynamicContext.StateMachine.States.RunningState.States
+﻿namespace InseminatorExamples.DynamicContext.StateMachine.States.RunningState.States
 {
     using System;
-    using System.Collections.Generic;
     using Core.ViewManager;
     using Cysharp.Threading.Tasks;
     using Inseminator.Scripts;

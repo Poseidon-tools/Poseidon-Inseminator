@@ -1,4 +1,4 @@
-﻿namespace SDI.AppState.States
+﻿namespace InseminatorExamples.AppState.States
 {
     using Core.ViewManager;
     using Inseminator.Scripts;

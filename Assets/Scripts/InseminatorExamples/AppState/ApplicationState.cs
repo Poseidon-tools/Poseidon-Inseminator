@@ -1,4 +1,4 @@
-﻿namespace SDI.AppState
+﻿namespace InseminatorExamples.AppState
 {
     public enum ApplicationState
     {

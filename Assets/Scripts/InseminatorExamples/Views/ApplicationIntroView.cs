@@ -1,4 +1,4 @@
-﻿namespace SDI.Views
+﻿namespace InseminatorExamples.Views
 {
     using Core.ViewManager;
     using UnityEngine;

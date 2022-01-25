@@ -1,4 +1,4 @@
-﻿namespace SDI.DynamicContext.StateMachine.States
+﻿namespace InseminatorExamples.DynamicContext.StateMachine.States
 {
     using Core.ViewManager;
     using Inseminator.Scripts;

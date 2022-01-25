@@ -1,6 +1,5 @@
-﻿namespace SDI.DynamicContext
+﻿namespace InseminatorExamples.DynamicContext
 {
-    using System;
     using Inseminator.Scripts;
     using Inseminator.Scripts.Example;
     using Inseminator.Scripts.Factory;

@@ -1,12 +1,10 @@
-﻿namespace SDI.DynamicContext.StateMachine.States
+﻿namespace InseminatorExamples.DynamicContext.StateMachine.States
 {
     using System;
-    using System.Collections.Generic;
     using Core.ViewManager;
     using Cysharp.Threading.Tasks;
     using Inseminator.Scripts;
     using Inseminator.Scripts.Example;
-    using MEC;
     using Poseidon.StateMachine;
     using Views;
 

@@ -1,4 +1,4 @@
-﻿namespace SDI.DynamicContext
+﻿namespace InseminatorExamples.DynamicContext
 {
     using Core.ViewManager;
     using Inseminator.Scripts.Installers;

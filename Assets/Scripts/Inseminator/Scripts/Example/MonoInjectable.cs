@@ -2,7 +2,7 @@
 {
     using Core.ViewManager;
     using Factory;
-    using SDI.DynamicContext;
+    using InseminatorExamples.DynamicContext;
     using Sirenix.OdinInspector;
     using UnityEngine;
 

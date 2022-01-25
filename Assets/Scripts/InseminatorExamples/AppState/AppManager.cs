@@ -1,6 +1,5 @@
-﻿namespace SDI.AppState
+﻿namespace InseminatorExamples.AppState
 {
-    using System;
     using Core.MessageDispatcher;
     using Core.ViewManager;
     using Poseidon.StateMachine;
