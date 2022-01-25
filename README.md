@@ -8,7 +8,7 @@ Must-have todo list:
 * ~~resolvers performance optimalization (reduce GC collection and CPU time usage -> optimize attributes searching)~~ -> **reflection baking** ✅
 * property injection ✅
 * method injection (bonus stuff) ✅
-* support injection to GameObject resolvers from scene resolver if needed ⏳
+* multi-level injection (3x"i" - into-installer injection) ✅
 
 # Compatibility
 
@@ -354,8 +354,6 @@ To get instantiated object working properly(with its dependencies) with DI-syste
 In order to use `InseminatorMonoFactory` for instantiating objects, you need to **install it first**.
 Just like installation of other dependencies, **all you have to do is to add FactoryInstaller** object somewhere in your resolver hierarchy, and then drag it to the installers list in resolver's inspector.
 
-**FactoryInstaller requires specifying InseminatorMonoFactory** instance that should be binded - but it should be already done for you when you drag'n'drop FactoryInstaller prefab into hierarchy. If somehow it's not, then create empty gameobject in FactoryInstaller hierarchy and add InseminatorMonoFactory component to it. Then drag this component to the FactoryInstaller inspector field waiting for InseminatorMonoFactory - and you're done.
-
 Next step is **injecting factory in place you want to use it** for instantiating objects at runtime.
 You can do it simply, just as any other field:
 `[InseminatorAttributes.Inseminate] private InseminatorMonoFactory factory;`
@@ -406,3 +404,24 @@ private void OnEnable()
 }
 ```
 **This functionality is not supported.**
+	
+
+### Multi-level injection
+This chapter will show you how to accomplish pretty tricky and a bit hard task, which occasionally might be necessary in your project: multi-level injection.
+
+#### The problem
+Let's assume, that you have prefab("Enemy" for example) created dynamically on the scene via factory, and this prefab itself is also separate GameObject context, with additional installer, maybe different resolving modules. But this prefab is not self-sufficient like in described in one of previous chapters, and requires some dependencies from parent-level dependency resolvers. 
+
+#### Solution
+The proper way of multi-level injection is to use into-installer injection approach.
+So, if your goal is to inject a dependency defined in parent-level scope(for example in highest scope - scene scope) into object inside separated, bottom-level scope (for example it'll be some component inside our "Enemy" prefab game object scope), all you have to do is re-bind dependency coming from parent-level dependency resolver.
+With this approach you can simply re-bind dependency defined already in higher level scope and use it in your lower level scope.
+In short: if scene ViewManager system is installed in SceneResolver and you want it to be injected inside component attached to an child-object in "Enemy" prefab GameObject scope hierarchy, you should apply re-binding techniquie in one of yours "Enemy" prefab GameObject scope installers, as following:
+```C#
+//this should come from parent-resolver  
+var parentVM = ResolveInParent<ViewManager>(inseminatorDependencyResolver.Parent);  
+inseminatorDependencyResolver.Bind(parentVM);
+```
+To sum up:
+you can explicitly resolve dependency of wanted type from parent-level resolvers by calling ResolveInParent\<T> method, available in every Installer deriving from InseminatorInstaller base class.
+Then, you can bind this freshly resolved dependency inside this installer, so it'll become available for injecting inside this separated scope.
