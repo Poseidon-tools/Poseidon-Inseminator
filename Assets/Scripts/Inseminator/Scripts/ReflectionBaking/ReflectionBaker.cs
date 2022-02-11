@@ -229,7 +229,7 @@
         #endregion
 
         #region Files
-#if UNITY_EDITOR_WIN
+#if UNITY_EDITOR
         private void SerializeBakingData(ReflectionBakingData bakingData)
         {
             var json = JsonConvert.SerializeObject(bakingData);
