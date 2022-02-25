@@ -1,4 +1,4 @@
-namespace Poseidon.Example
+namespace Example
 {
     public enum ExampleStateType
     {

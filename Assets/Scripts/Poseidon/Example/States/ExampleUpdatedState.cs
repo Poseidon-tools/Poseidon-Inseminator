@@ -1,9 +1,11 @@
-﻿namespace Poseidon.Example.States
+﻿namespace Example.States
 {
-    using StateMachine;
+    using Example;
+    using Poseidon.StateMachine;
+    using Poseidon.StateMachine.UpdateInterface;
     using UnityEngine;
 
-    public class ExampleUpdatedState :State<ExampleStateType>, IUpdatable
+    public class ExampleUpdatedState : State<ExampleStateType>, IUpdate
     {
         private const float TIME_TO_UPDATE = 1f;
         private float lastUpdatedTime;
@@ -22,10 +24,11 @@
 
         public void OnUpdate()
         {
+            Debug.Log("OnUpdate in one second period");
             if (Time.time - lastUpdatedTime > TIME_TO_UPDATE)
             {
                 lastUpdatedTime = Time.time;
-                Debug.Log("Updated in one second period");
+                
             }
         }
     }

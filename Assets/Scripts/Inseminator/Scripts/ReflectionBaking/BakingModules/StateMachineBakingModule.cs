@@ -17,17 +17,25 @@
         #region State Machine Helpers
         private void GetStates(object stateManagerInstance, ReflectionBakingData bakingData)
         {
-            var properties = stateManagerInstance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var properties = stateManagerInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             foreach (var propertyInfo in properties)
             {
-                if (!propertyInfo.PropertyType.IsArray)
+                if (!propertyInfo.FieldType.IsArray)
                 {
                     continue;
                 }
                 // check if array is the states array
-                var elementType = propertyInfo.PropertyType.GetElementType();
-                if (elementType == null || !elementType.IsGenericType) continue;
-                if (elementType.GetGenericTypeDefinition() != typeof(State<>)) continue;
+                var elementType = propertyInfo.FieldType.GetElementType();
+                if (elementType == null || !elementType.IsGenericType)
+                {
+                    //Debug.LogError($"{elementType?.Name} is not an generic type.");
+                    continue;
+                }
+                if (elementType.GetGenericTypeDefinition() != typeof(State<>))
+                {
+                    //Debug.LogError($"{elementType.Name} is not an State<>, it's {elementType.GetGenericTypeDefinition()}");
+                    continue;
+                }
                 //Debug.Log("Found states array!");
                 var statesArray = propertyInfo.GetValue(stateManagerInstance) as object[];
                 ResolveStates(statesArray, bakingData);
@@ -58,11 +66,13 @@
                 var targetType = fieldInfo.FieldType;
                 if (!targetType.IsGenericType)
                 {
+                    //Debug.LogError($"Can't bake {fieldInfo.Name}: not a generic");
                     continue;
                 }
                
                 if (targetType.GetGenericTypeDefinition() != typeof(StateMachine<>))
                 {
+                    //Debug.LogError($"Can't bake {fieldInfo.Name}: not a StateMachine<>, its {targetType.GetGenericTypeDefinition()} ");
                     continue;
                 }
                 // this is StateManager<>

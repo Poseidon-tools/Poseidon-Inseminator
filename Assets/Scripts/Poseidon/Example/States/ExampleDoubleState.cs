@@ -1,4 +1,4 @@
-﻿namespace Poseidon.Example.States
+﻿namespace Example.States
 {
     public class ExampleDoubleState
     {

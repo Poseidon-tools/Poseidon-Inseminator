@@ -1,4 +1,6 @@
-﻿namespace Inseminator.Scripts.DependencyResolvers.Modules
+﻿using Sirenix.Utilities;
+
+namespace Inseminator.Scripts.DependencyResolvers.Modules
 {
     using System;
     using System.Reflection;
@@ -14,17 +16,27 @@
        
         private void GetStates(object stateManagerInstance)
         {
-            var properties = stateManagerInstance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var properties = stateManagerInstance.GetType().GetFields(BindingFlags.Instance 
+                                                                          | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Default | BindingFlags.Static);
             foreach (var propertyInfo in properties)
             {
-                if (!propertyInfo.PropertyType.IsArray)
+                if (!propertyInfo.FieldType.IsArray)
                 {
+                    //Debug.Log($"{propertyInfo.Name} not an array");
                     continue;
                 }
                 // check if array is the states array
-                var elementType = propertyInfo.PropertyType.GetElementType();
-                if (elementType == null || !elementType.IsGenericType) continue;
-                if (elementType.GetGenericTypeDefinition() != typeof(State<>)) continue;
+                var elementType = propertyInfo.FieldType.GetElementType();
+                if (elementType == null || !elementType.IsGenericType)
+                {
+                    //Debug.LogError($"{elementType?.Name} is not an generic type.");
+                    continue;
+                }
+                if (elementType.GetGenericTypeDefinition() != typeof(State<>))
+                {
+                    //Debug.LogError($"{elementType.Name} is not an State<>, it's {elementType.GetGenericTypeDefinition()}");
+                    continue;
+                }
                 //Debug.Log("Found states array!");
                 var statesArray = propertyInfo.GetValue(stateManagerInstance) as object[];
                 ResolveStates(statesArray);
@@ -78,7 +90,7 @@
                 var field = sourceObject.GetType().GetField(stateMachineFieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 if (field == null)
                 {
-                    Debug.LogError($"Cannot resolve {stateMachineFieldName} field in {sourceObject.GetType().Name}");
+                   // Debug.LogError($"Cannot resolve {stateMachineFieldName} field in {sourceObject.GetType().Name}");
                     continue;
                 }
                 var stateManagerInstance = field.GetValue(sourceObject);

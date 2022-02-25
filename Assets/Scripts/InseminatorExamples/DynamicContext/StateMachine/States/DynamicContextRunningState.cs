@@ -17,12 +17,11 @@
         [InseminatorAttributes.Inseminate] private ITextLogger textLogger;
         [InseminatorAttributes.Inseminate] private ViewManager viewManager;
 
-        private StateMachine<RunningStateType> stateMachine = new StateMachine<RunningStateType>(
-            new State<RunningStateType>[]
-            {
-                new RunningStartingState(),
-                new RunningUpdateState()
-            }, RunningStateType.Starting);
+        private StateMachine<RunningStateType> stateMachine = new StateMachine<RunningStateType>(new State<RunningStateType>[]
+        {
+            new RunningStartingState(),
+            new RunningUpdateState()
+        });
 
         private DynamicContextStatusView dynamicContextStatusView;
         #endregion

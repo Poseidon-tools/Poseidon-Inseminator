@@ -25,7 +25,7 @@
             {
                 new DynamicContextIdleState(),
                 new DynamicContextRunningState()
-            }, DynamicContextStateType.Idle);
+            });
         #endregion
 
         #region Unity Methods

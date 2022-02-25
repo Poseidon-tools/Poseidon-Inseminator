@@ -1,22 +1,21 @@
-namespace Poseidon.Example
+namespace Example
 {
-    using StateMachine;
+    using Poseidon.StateMachine;
     using States;
     using UnityEngine;
 
     public class StateMachineExample : MonoBehaviour
     {
+        public ExampleStateType initialState;
+        
         private readonly StateMachine<ExampleStateType> exampleStateMachine = new StateMachine<ExampleStateType>(
-            new State<ExampleStateType>[]
-            {
-                new ExampleIdleState(), 
-                new ExampleUpdatedState()
-            },
-            ExampleStateType.ExampleUpdated);
+            new ExampleIdleState(), 
+            new ExampleUpdatedState()
+            );
 
         private void OnEnable()
         {
-            exampleStateMachine.Run();
+            exampleStateMachine.Run(initialState);
         }
 
         private void OnDisable()
