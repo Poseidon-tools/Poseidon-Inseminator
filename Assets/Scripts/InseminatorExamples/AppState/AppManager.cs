@@ -1,6 +1,5 @@
 ﻿namespace InseminatorExamples.AppState
 {
-    using Core.MessageDispatcher;
     using Core.ViewManager;
     using Poseidon.StateMachine;
     using Sirenix.OdinInspector;
@@ -11,7 +10,6 @@
     {
         #region Inspector
         [SerializeField] private ViewManager appViewManager;
-        [SerializeField] private MessageDispatcher messageDispatcher;
         #endregion
         #region Private Variables
 

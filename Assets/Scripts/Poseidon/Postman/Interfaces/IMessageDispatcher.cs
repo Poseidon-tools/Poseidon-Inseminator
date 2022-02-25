@@ -1,7 +1,5 @@
-namespace Core.MessageDispatcher.Interfaces
+namespace Poseidon.Postman.Interfaces
 {
-    using Interfaces;
-
     public interface IMessageDispatcher
     {
         void RegisterReceiver(IMessageReceiver receiver);

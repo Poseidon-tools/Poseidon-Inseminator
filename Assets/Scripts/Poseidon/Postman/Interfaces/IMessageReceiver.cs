@@ -1,4 +1,4 @@
-namespace Core.MessageDispatcher.Interfaces
+namespace Poseidon.Postman.Interfaces
 {
     using System;
     using System.Collections.Generic;

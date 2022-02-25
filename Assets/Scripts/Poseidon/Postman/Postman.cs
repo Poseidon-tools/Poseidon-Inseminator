@@ -1,21 +1,17 @@
-namespace Core.MessageDispatcher
+namespace Poseidon.Postman
 {
     using System;
     using System.Collections.Generic;
-    using Sirenix.OdinInspector;
+    using Interfaces;
     using UnityEngine;
-    using Utils.ScriptableObjectSingleton;
-    
-    using Core.MessageDispatcher.Interfaces;
 
-    [CreateAssetMenu(menuName = "Core/MessageDispatcher")]
-    public class MessageDispatcher : SingletonScriptableObject<MessageDispatcher>, IMessageDispatcher
+    public static class Postman
     {
         #region Private Variables
-        [ShowInInspector] private Dictionary<Type, List<Action<object>>> receivers = new Dictionary<Type, List<Action<object>>>();
+        private static Dictionary<Type, List<Action<object>>> receivers = new Dictionary<Type, List<Action<object>>>();
         #endregion
         #region Public Methods
-        public void RegisterReceiver(IMessageReceiver receiver)
+        public static void RegisterReceiver(IMessageReceiver receiver)
         {
             Debug.Log("received!");
             foreach (var listenedType in receiver.ListenedTypes)
@@ -28,7 +24,7 @@ namespace Core.MessageDispatcher
                 receivers.Add(listenedType, new List<Action<object>>(){receiver.OnMessageReceived});
             }
         }
-        public void UnregisterReceiver(IMessageReceiver receiver)
+        public static void UnregisterReceiver(IMessageReceiver receiver)
         {
             List<Type> entriesToRemove = new List<Type>();
             foreach (var listenedType in receiver.ListenedTypes)
@@ -49,7 +45,7 @@ namespace Core.MessageDispatcher
             }
         }
 
-        public void Send<T>(T message)
+        public static void Send<T>(T message)
         {
             if (!receivers.TryGetValue(typeof(T), out var receiversList)) return;
             for (var index = 0; index < receiversList.Count; index++)
