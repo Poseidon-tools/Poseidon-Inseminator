@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Unity.VisualScripting;
     using UnityEngine;
 
     public static class MethodsHelper
@@ -42,7 +41,7 @@
             var resultList = new List<(MethodInfo, InseminatorAttributes.InseminateMethod)>();
             foreach (var filteredMethod in filteredMethods)
             {
-                resultList.Add((filteredMethod, filteredMethod.GetAttribute<InseminatorAttributes.InseminateMethod>()));
+                resultList.Add((filteredMethod, filteredMethod.GetCustomAttribute<InseminatorAttributes.InseminateMethod>()));
             }
 
             return resultList;
