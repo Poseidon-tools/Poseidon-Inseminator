@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
-using UnityEngine;
-
-namespace UnityToolbarExtender
+namespace Inseminator.Scripts.Toolbar.ToolbarExtender
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Reflection;
+	using UnityEditor;
+	using UnityEngine;
+
 	[InitializeOnLoad]
 	public static class ToolbarExtender
 	{

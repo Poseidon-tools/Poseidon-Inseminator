@@ -5,6 +5,7 @@
     using System.Linq;
     using Data;
     using Installers;
+    using PersistentObjects;
     using ResolvingModules;
     using UnityEngine;
 
@@ -13,9 +14,11 @@
         #region Public Variables
         public Dictionary<Type, List<InstallerEntity>> RegisteredDependencies => registeredDependencies;
         public InseminatorDependencyResolver Parent { get; private set; }
+        public InseminatorPersistentContainer PersistentContainer => persistentContainer;
         #endregion
         #region Private Variables
         protected Dictionary<Type, List<InstallerEntity>> registeredDependencies = new Dictionary<Type, List<InstallerEntity>>();
+        protected InseminatorPersistentContainer persistentContainer;
         #endregion
         #region Inspector
         [SerializeField, Header("Declared Installers")]
@@ -26,9 +29,11 @@
         #endregion
 
         #region Public API
-        public virtual void InitializeResolver(InseminatorDependencyResolver parent = null)
+        public virtual void InitializeResolver(InseminatorDependencyResolver parent = null, InseminatorPersistentContainer persistentContainer = null)
         {
             Parent = parent;
+            this.persistentContainer = persistentContainer;
+            
             OnBeforeInstall();
             Install(declaredInstallers);
             OnAfterInstall();
@@ -48,12 +53,21 @@
             }
         }
 
-        public void Bind<T>(T objectInstance, string instanceId = "")
+        public void Bind<T>(T objectInstance, object instanceId = null)
         {
             InstallDependency(typeof(T), new InstallerEntity
             {
-                Id = instanceId,
+                Id = instanceId ?? "",
                 ObjectInstance = objectInstance
+            });
+        }
+
+        public void BindToPersistentContainer<T>(T objectInstance, object instanceId = null)
+        {
+            persistentContainer?.InstallPersistentDependency(typeof(T), new InstallerEntity()
+            {
+                ObjectInstance = objectInstance,
+                Id =  instanceId
             });
         }
         

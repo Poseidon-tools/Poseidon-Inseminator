@@ -49,9 +49,9 @@
         {
             List<MonoBehaviour> components = new List<MonoBehaviour>();
             
-            foreach (var listItem in sourceObjectsList)
+            foreach (var listItem in sourceObjectsList.Where(obj => obj != null))
             {
-                components.AddRange(listItem.GetComponents<MonoBehaviour>().Where(c => !excludedTypes.Contains(c.GetType())).ToList());
+                components.AddRange(listItem.GetComponents<MonoBehaviour>().Where(c => c != null && !excludedTypes.Contains(c.GetType())).ToList());
             }
             return components;
         }

@@ -1,16 +1,17 @@
-using System;
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
-
 #if UNITY_2019_1_OR_NEWER
-using UnityEngine.UIElements;
+
 #else
 using UnityEngine.Experimental.UIElements;
 #endif
 
-namespace UnityToolbarExtender
+namespace Inseminator.Scripts.Toolbar.ToolbarExtender
 {
+	using System;
+	using System.Reflection;
+	using UnityEditor;
+	using UnityEngine;
+	using UnityEngine.UIElements;
+
 	public static class ToolbarCallback
 	{
 		static Type m_toolbarType = typeof(Editor).Assembly.GetType("UnityEditor.Toolbar");

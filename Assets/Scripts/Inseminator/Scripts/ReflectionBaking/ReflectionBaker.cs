@@ -51,7 +51,8 @@
         {
             bakingData = new ReflectionBakingData();
             //todo: bake all scenes first
-            Debug.Log("Attempt to bake all scenes.");
+            Debug.Log("Attempt to bake all scenes. Saving current scene...");
+            EditorSceneManager.SaveOpenScenes();
             LoadAllScenes();
             Debug.Log("Attempt to bake assets.");
             BakeFromAssets();
@@ -213,6 +214,7 @@
 #if UNITY_EDITOR
         private void LoadAllScenes()
         {
+            var cachedScenePath = EditorSceneManager.GetSceneAt(0).path;
             var scenes = EditorBuildSettings.scenes;
             foreach (var scene in scenes)
             {
@@ -223,7 +225,7 @@
                 BakeScene(tmpScene);
             }
 
-            EditorSceneManager.OpenScene(scenes[0].path);
+            EditorSceneManager.OpenScene(cachedScenePath);
         }
 #endif
         #endregion
@@ -243,6 +245,8 @@
             string filename = BAKING_DATA_FILENAME;
             string fullPath = $"{mainDirPath}/{filename}";
             File.WriteAllText(fullPath, json);
+            
+            AssetDatabase.Refresh();
         }
 #endif
         private ReflectionBakingData DeserializeBakingData(string json)

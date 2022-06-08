@@ -1,10 +1,10 @@
-﻿namespace Inseminator.Scripts.Editor
+﻿namespace Inseminator.Scripts.Toolbar
 {
+#if UNITY_EDITOR
     using ReflectionBaking;
     using UnityEditor;
     using UnityEngine;
-    using UnityToolbarExtender;
-    
+
     static class ToolbarStyles
     {
         public static readonly GUIStyle commandButtonStyle;
@@ -27,7 +27,7 @@
     {
         static BakeProjectToolbarButton()
         {
-            ToolbarExtender.LeftToolbarGUI.Add(DrawBakeGUI);
+            ToolbarExtender.ToolbarExtender.LeftToolbarGUI.Add(DrawBakeGUI);
         }
 
         private static void DrawBakeGUI()
@@ -40,4 +40,6 @@
             }
         }
     }
+#endif
+    
 }

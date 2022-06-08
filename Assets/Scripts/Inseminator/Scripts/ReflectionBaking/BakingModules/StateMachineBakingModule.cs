@@ -4,6 +4,7 @@
     using System.Reflection;
     using Data.Baking;
     using Poseidon.StateMachine;
+    using Sirenix.Utilities;
     using UnityEngine;
 
     public class StateMachineBakingModule : InseminatorBakingModule
@@ -52,6 +53,7 @@
             foreach (var state in statesArray)
             {
                 var stateInstance = state;
+                //Debug.LogError($"Trying to bake state {stateInstance.GetType().GetNiceName()}");
                 reflectionBaker.BakeSingle(ref stateInstance);
             }
         }

@@ -1,12 +1,9 @@
-﻿using Sirenix.Utilities;
-
-namespace Inseminator.Scripts.DependencyResolvers.Modules
+﻿namespace Inseminator.Scripts.DependencyResolvers.Modules
 {
     using System;
     using System.Reflection;
     using Data.Baking;
     using Poseidon.StateMachine;
-    using UnityEngine;
 
     public class StateMachineResolver
     {

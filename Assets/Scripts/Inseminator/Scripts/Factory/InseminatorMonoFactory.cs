@@ -21,7 +21,7 @@
             var gameObjectResolver = CheckForGameObjectContext(instanceGameObject);
             if (gameObjectResolver != null)
             {
-                gameObjectResolver.InitializeResolver(AssignedResolver);
+                gameObjectResolver.InitializeResolver(AssignedResolver, AssignedResolver.PersistentContainer);
                 objectInstance.gameObject.SetActive(true);
                 return objectInstance;
             }

@@ -12,10 +12,11 @@
     public class PrebakedInjectionModule : ResolvingModule
     {
         #region Private Variables
-        private ReflectionBakingData bakingData;
-        private InseminatorDependencyResolver dependencyResolver;
-        private MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
+        protected ReflectionBakingData bakingData;
+        protected InseminatorDependencyResolver dependencyResolver;
+        protected MemberInfoExtractor memberInfoExtractor = new MemberInfoExtractor();
         #endregion
+
         #region Public API
         public override void Run(InseminatorDependencyResolver dependencyResolver, object sourceObject)
         {
@@ -27,13 +28,22 @@
         #endregion
 
         #region Private Methods
-        private void BakedDataLookup(object sourceObject)
+        protected virtual void BakedDataLookup(object sourceObject)
         {
             if (sourceObject == null)
             {
+                //Debug.LogError($"Failed to start lookup");
                 return;
             }
-            if (!bakingData.BakedInjectableFields.TryGetValue(sourceObject.GetType(), out var fieldBakingDatas)) return;
+            //Debug.LogError($"Starting lookup for {sourceObject.GetType().GetNiceName()}");
+            if (!bakingData.BakedInjectableFields.TryGetValue(sourceObject.GetType(), out var fieldBakingDatas))
+            {
+                //Debug.LogError($"Can't find baked fields for {sourceObject.GetType().GetNiceName()}");
+                
+                ResolveAndRunBakedMethods(sourceObject);
+                ResolveNested(ref sourceObject);
+                return;
+            }
             foreach (var fieldBakingData in fieldBakingDatas)
             {
                 var memberInfo = memberInfoExtractor.GetMember(fieldBakingData.MemberType, fieldBakingData.MemberName,
@@ -45,6 +55,7 @@
                     continue;
                 }
                 var instance = ResolveSingleDependency(memberInfo.GetUnderlyingType(), fieldBakingData.Attribute?.InstanceId);
+                if(preventOverridingExistingValues && instance == null) continue;
                 memberInfo.SetValue(sourceObject, instance);
             }
             ResolveAndRunBakedMethods(sourceObject);
@@ -52,8 +63,10 @@
             ResolveNested(ref sourceObject);
         }
         
-        private void ResolveNested(ref object parentInstance)
+        protected virtual void ResolveNested(ref object parentInstance)
         {
+            //Debug.LogError($"Trying to resolve nested {parentInstance.GetType().GetNiceName()}");
+
             if (parentInstance == null)
             {
                 return;
@@ -61,6 +74,7 @@
             if (!bakingData.BakedSurrogateFields.TryGetValue(parentInstance.GetType(),
                 out var surrogateFieldBakingDatas))
             {
+                //Debug.LogError($"Cannot get surrogate entry for {parentInstance.GetType().GetNiceName()}");
                 return;
             }
 
@@ -71,7 +85,7 @@
                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 if (memberInfo == null)
                 {
-                    Debug.LogError($"Failed to get member: {surrogateFieldBakingData.MemberName}");
+                    //Debug.LogError($"Failed to get member: {surrogateFieldBakingData.MemberName}");
                     continue;
                 }
                 var nestedInstance = memberInfo.GetValue(parentInstance);
@@ -80,13 +94,14 @@
                     nestedInstance = Activator.CreateInstance(memberInfo.GetUnderlyingType());
                     if(nestedInstance == null)
                     {
-                        Debug.LogError("Cannot create DI instance of object.");
+                        //Debug.LogError("Cannot create DI instance of object.");
                         continue;
                     }
                     memberInfo.SetValue(parentInstance, nestedInstance);
                 }
                     
-                BakedDataLookup(nestedInstance);
+                //BakedDataLookup(nestedInstance);
+                dependencyResolver.ResolveDependencies(ref nestedInstance);
                 if (memberInfo.GetUnderlyingType().IsValueType)
                 {
                     memberInfo.SetValue(parentInstance, nestedInstance);
@@ -94,11 +109,14 @@
             }
         }
         
-        private object ResolveSingleDependency(Type targetType, object instanceId = null)
+        protected virtual object ResolveSingleDependency(Type targetType, object instanceId = null)
         {
             if (!dependencyResolver.RegisteredDependencies.TryGetValue(targetType, out var dependency))
             {
-                Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}");
+                if(logErrors)
+                {
+                    Debug.LogError($"Cannot get dependency instance for {targetType.Name} | {targetType}", this);
+                }
                 return default;
             }
             if (instanceId == null)
@@ -110,12 +128,16 @@
             return matchingInstance?.ObjectInstance;
         }
 
-        private void ResolveAndRunBakedMethods(object sourceObject)
+        protected virtual void ResolveAndRunBakedMethods(object sourceObject)
         {
             var targetType = sourceObject.GetType();
             List<object> resolvedParameters = new List<object>();
             if (!bakingData.BakedMethods.TryGetValue(targetType, 
-                out var bakedMethods)) return;
+                out var bakedMethods))
+            {
+                //Debug.LogError($"No bake methods for {sourceObject.GetType().GetNiceName()}");
+                return;
+            }
             foreach (var bakedMethod in bakedMethods)
             {
                 resolvedParameters.Clear();
@@ -125,12 +147,17 @@
                 {
                     if (paramValue == null)
                     {
+                        if(logErrors)
+                        {
+                            Debug.LogError($"No value for param {bakedMethod.Attribute.ParamIds[paramIndex]}");
+                        }
                         paramIndex++;
                         continue;
                     }
                     resolvedParameters.Add(paramValue);
                     paramIndex++;
                 }
+                Debug.Log($"Trying to run injection method {bakedMethod.MemberName}");
                 MethodsHelper.RunMethod(sourceObject, bakedMethod.MemberName, resolvedParameters);
             }
         }

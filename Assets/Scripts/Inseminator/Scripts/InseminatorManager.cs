@@ -1,7 +1,9 @@
 ﻿namespace Inseminator.Scripts
 {
     using System.Collections.Generic;
+    using Core.Inseminator.Scripts.InseminatorExtensions;
     using DependencyResolvers.Scene;
+    using PersistentObjects;
     using ReflectionBaking;
     using Resolver;
     using UnityEngine;
@@ -9,17 +11,39 @@
     [DefaultExecutionOrder(-50)]
     public class InseminatorManager : MonoBehaviour
     {
+        #region Public Variables
+        public ResolverTreeNode ParentTreeNode { get; private set; }
+        public static readonly InseminatorPersistentContainer PersistentContainer = new InseminatorPersistentContainer();
+        #endregion
+
+        #region Inspector
+        [SerializeReference, SerializeField] private List<InseminatorExtension> extensions = new List<InseminatorExtension>();
+        #endregion
         #region Private Methods
         private void Awake()
         {
+            PersistentContainer.Initialize();
+            PersistentObjectRegistry.Cleanup();
+
             ReflectionBaker.Instance.Initialize();
             
-            ResolveTree(BuildResolversTree());
+            InitializeExtensions();
+
+            ParentTreeNode = BuildResolversTree(ParentTreeNode);
+            ResolveTree(ParentTreeNode);
+            
         }
 
-        private void ResolveTree(ResolverTreeNode node)
+        private void OnDestroy()
         {
-            node.Resolver.InitializeResolver(node.Parent?.Resolver);
+            DisposeExtensions();
+        }
+        #endregion
+
+        #region Public API
+        public void ResolveTree(ResolverTreeNode node)
+        {
+            node.Resolver.InitializeResolver(node.Parent?.Resolver, PersistentContainer);
             foreach (var childNode in node.ChildNodes)
             {
                 ResolveTree(childNode);
@@ -28,20 +52,21 @@
         #endregion
         
         #region Collecting resolvers
-        private class ResolverTreeNode
+        public class ResolverTreeNode
         {
             public ResolverTreeNode Parent;
             public InseminatorDependencyResolver Resolver;
             public List<ResolverTreeNode> ChildNodes = new List<ResolverTreeNode>();
         }
-        private ResolverTreeNode BuildResolversTree()
+        public ResolverTreeNode BuildResolversTree(ResolverTreeNode mainNode = null, InseminatorDependencyResolver resolver = null)
         {
-            var mainNode = new ResolverTreeNode()
+            mainNode ??= new ResolverTreeNode()
             {
-                Resolver = FindObjectOfType<SceneDependencyResolver>(),
+                Resolver = resolver == null ? FindObjectOfType<SceneDependencyResolver>() : resolver,
             };
             // get scene objects
-            var sceneObjects = InseminatorHelpers.GetRootSceneObjects(gameObject.scene);
+            var sceneObjects = InseminatorHelpers.GetRootSceneObjects(mainNode.Resolver.gameObject.scene);
+
             foreach (var sceneObject in sceneObjects)
             {
                 SearchForResolver(sceneObject.transform, mainNode);
@@ -57,9 +82,17 @@
                 ChildNodes = new List<ResolverTreeNode>(),
                 Parent =  parentNode
             };
+            if (node.Resolver == parentNode.Resolver) return parentNode;
             parentNode.ChildNodes.Add(node);
-            //Debug.Log($"Added {node.Resolver.name} into {parentNode.Resolver.name} child list.");
             return node;
+
+        }
+
+        public void AddNodeTreeToRootNodeTree(ResolverTreeNode nodeTreeHead)
+        {
+            if(ParentTreeNode == null) return;
+            if(nodeTreeHead.Resolver == ParentTreeNode.Resolver) return;
+            ParentTreeNode.ChildNodes.Add(nodeTreeHead);
         }
 
         private void SearchForResolver(Transform target, ResolverTreeNode parentNode)
@@ -88,6 +121,23 @@
                 }
                 newParentNode = AddNode(parentNode, resolver);
                 SearchForResolver(child, newParentNode);
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private void InitializeExtensions()
+        {
+            foreach (var extension in extensions)
+            {
+                extension.Enable(this);
+            }
+        }
+        private void DisposeExtensions()
+        {
+            foreach (var extension in extensions)
+            {
+                extension.Disable();
             }
         }
         #endregion

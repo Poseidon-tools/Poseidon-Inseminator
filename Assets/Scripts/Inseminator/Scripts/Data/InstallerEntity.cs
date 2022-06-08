@@ -5,7 +5,7 @@
     [Serializable]
     public class InstallerEntity
     {
-        public string Id;
+        public object Id = "";
         public object ObjectInstance;
     }
 }

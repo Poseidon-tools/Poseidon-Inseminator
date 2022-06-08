@@ -1,4 +1,4 @@
-﻿namespace Utils.ScenesHelper
+﻿namespace Core.Utils.ScenesHelper
 {
     using System;
     using System.Collections.Generic;

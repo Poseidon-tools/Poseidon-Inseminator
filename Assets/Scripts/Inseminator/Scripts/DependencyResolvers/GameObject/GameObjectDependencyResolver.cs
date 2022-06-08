@@ -46,11 +46,23 @@
 
         private void GetChildren(GameObject parentObject, List<GameObject> outputList)
         {
-            int childCount = parentObject.transform.childCount;
-            outputList.Add(parentObject);
-            for (int i = 0; i < childCount; i++)
+            var childCount = parentObject.transform.childCount;
+            if(outputList.Count == 0)
             {
-                GetChildren(parentObject.transform.GetChild(i).gameObject, outputList);
+                outputList.Add(parentObject);
+                for (int i = 0; i < childCount; i++)
+                {
+                    GetChildren(parentObject.transform.GetChild(i).gameObject, outputList);
+                }
+            }
+            else
+            {
+                if (parentObject.GetComponent<InseminatorDependencyResolver>() != null) return;
+                outputList.Add(parentObject);
+                for (var i = 0; i < childCount; i++)
+                {
+                    GetChildren(parentObject.transform.GetChild(i).gameObject, outputList);
+                }
             }
         }
         #endregion

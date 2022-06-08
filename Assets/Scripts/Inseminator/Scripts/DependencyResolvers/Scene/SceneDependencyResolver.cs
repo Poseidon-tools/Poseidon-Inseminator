@@ -4,16 +4,15 @@
     using System.Collections.Generic;
     using Data;
     using Installers;
+    using PersistentObjects;
     using Resolver;
     using UnityEngine;
+    using UnityEngine.SceneManagement;
 
     public class SceneDependencyResolver : InseminatorDependencyResolver
     {
         #region Protected Variables
         protected List<MonoBehaviour> sceneComponents;
-        #endregion
-        #region Public API
-        
         #endregion
         #region Resolving
         protected override void GetTargetObjects()
@@ -21,6 +20,9 @@
             var sceneObjects = InseminatorHelpers.GetSceneObjectsExceptTypes(new List<Type>()
             {
             }, gameObject.scene);
+            // also look for persistent objects moved to DontDestroyOnLoad section from considered scene
+            sceneObjects.AddRange(FetchPersistentObjectsBySceneOrigin(gameObject.scene));
+            
             var filteredObjects = FilterSceneObjectsByParent(sceneObjects);
             sceneComponents = InseminatorHelpers.GetComponentsExceptTypes(filteredObjects, new List<Type>()
             {
@@ -69,6 +71,12 @@
             }
 
             return result;
+        }
+        
+          
+        private List<GameObject> FetchPersistentObjectsBySceneOrigin(Scene scene)
+        {
+            return PersistentObjectRegistry.GetPersistentObjectsBySceneOrigin(scene);
         }
         #endregion
         

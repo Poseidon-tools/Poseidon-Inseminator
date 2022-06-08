@@ -4,6 +4,7 @@
     using System.Reflection;
     using Data.Baking;
     using Resolver.Helpers;
+    using Sirenix.Utilities;
     using UnityEngine;
 
     public class StandardBakingModule  : InseminatorBakingModule
@@ -18,7 +19,7 @@
             var allInjectableMembers = memberInfoExtractor.GetMembers(MemberTypes.Field, instanceObject,
                 BindingFlags.Instance | BindingFlags.NonPublic);
             allInjectableMembers.AddRange(memberInfoExtractor.GetMembers(MemberTypes.Property, instanceObject, BindingFlags.Instance | BindingFlags.Public));
-            
+
             foreach (var memberInfo in allInjectableMembers)
             {
                 if (!memberInfo.IsDefined(typeof(InseminatorAttributes.Inseminate)))
@@ -70,8 +71,8 @@
                     }
                     memberInfo.SetValue(parentInstance, nestedInstance);
                 }
-                
-                GetMembersForBaking(ref nestedInstance, bakingData);
+                //GetMembersForBaking(ref nestedInstance, bakingData);
+                ReflectionBaker.Instance.BakeSingle(ref nestedInstance);
             }
         }
     }

@@ -2,9 +2,10 @@
 {
     using JetBrains.Annotations;
     using Resolver;
+    using Sirenix.OdinInspector;
     using UnityEngine;
 
-    public abstract class InseminatorInstaller : MonoBehaviour, IInseminatorInstaller
+    public abstract class InseminatorInstaller : SerializedMonoBehaviour, IInseminatorInstaller
     {
         #region Installer API
         [UsedImplicitly]
