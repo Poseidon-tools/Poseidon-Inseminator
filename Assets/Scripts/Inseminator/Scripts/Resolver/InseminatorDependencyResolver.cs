@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Core.ViewManager;
     using Data;
     using Installers;
     using PersistentObjects;
@@ -105,6 +106,7 @@
             {
                 resolvingModule.Run(this, instanceObject);
             }
+            InitializeObject(instanceObject);
         }
         #endregion
         
@@ -126,6 +128,18 @@
                 installer.InstallBindings(this);
             }
         }
+        #endregion
+
+        #region Injection callbacks
+
+        protected virtual void InitializeObject(object targetObject)
+        {
+            if (targetObject is IInitializable initializableObject)
+            {
+                initializableObject.Initialize();
+            }
+        }
+
         #endregion
        
     }

@@ -6,7 +6,7 @@
     using Sirenix.OdinInspector;
     using UnityEngine;
 
-    public class MonoInjectable : MonoBehaviour
+    public class MonoInjectable : MonoBehaviour, IInitializable
     {
         [field: SerializeField, InseminatorAttributes.Inseminate, PreviewField]
         public MessageData SceneScopeMessageData { get; private set; }
@@ -29,6 +29,12 @@
         private void InstantiateDynamicContextPrefab()
         {
             monoFactory.Create<DynamicContextPrefab>(dynamicContextPrefab);
+        }
+
+        void IInitializable.Initialize()
+        {
+            Debug.Log("This should be called when resolving process ended for this object.");
+            Debug.Log($"{SceneScopeMessageData.Message} | {viewManager.name}");
         }
     }
 }
